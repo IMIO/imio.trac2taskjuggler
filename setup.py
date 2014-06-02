@@ -23,9 +23,12 @@ setup(name='imio.trac2taskjuggler',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'imio.pyutils',
+          'jinja2',
+          'psycopg2',
       ],
       entry_points="""
-      # -*- Entry points: -*-
+      [console_scripts]
+      generate_tj = imio.trac2taskjuggler.main:generate
       """,
       )
