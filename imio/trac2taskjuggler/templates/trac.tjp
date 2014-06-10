@@ -1,0 +1,22 @@
+project imio "Planification depuis trac" {{ prj_start }} +1y {
+    timingresolution 30 min
+    timezone "Europe/Paris"
+    currency "EUR"
+    timeformat "%Y-%m-%d"
+    trackingscenario plan
+    dailyworkinghours 7.6
+    yearlyworkingdays 200
+}
+
+#2014
+leaves holiday "Doudou" 2014-06-12 +2d
+    , holiday "Fête nationale" 2014-07-21
+    , holiday "Assomption" 2014-08-15
+    , holiday "Armistice" 2014-11-11
+    , holiday "Noel" 2014-12-25 +2d
+    , holiday "Noel" 2014-12-29 +3d
+#2015
+    , holiday "Jour de l'an" 2015-01-01
+#    , holiday "" 2015--
+
+include "resources.tji"
