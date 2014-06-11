@@ -23,6 +23,7 @@ setup(name='imio.trac2taskjuggler',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'awesome-slugify',
           'imio.pyutils',
           'jinja2',
           'psycopg2',
