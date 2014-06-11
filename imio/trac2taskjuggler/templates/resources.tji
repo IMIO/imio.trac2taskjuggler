@@ -1,0 +1,30 @@
+flags dll
+
+resource dev "DLL" {
+  flags dll
+  resource example "" {
+    # leaves : indique une absence d'un certain type; annual: congé, sick: maladie, special: extra (récup, etc.)
+    # ... date : date de départ + durée du congé en jours calendrier
+    leaves annual 2014-06-10 +2d   # => congé les 11 et 12 juin
+    # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
+    limits { dailymax 5.4h }
+  }
+  resource anuyens "" {
+  }
+  resource bsuttor "" {
+  }
+  resource fngaha "" {
+  }
+  resource gbastien "" {
+  }
+  resource mgennart "" {
+  }
+  resource osnickers "" {
+  }
+  resource sdelcourt "" {
+  }
+  resource sgeulette "" {
+  }
+  resource vantoine "" {
+  }
+}

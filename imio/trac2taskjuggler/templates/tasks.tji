@@ -1,0 +1,16 @@
+flags maintask
+flags subtask
+
+{% for prj in prjs.keys()|sort %}
+flags {{prj}}
+{% endfor %}
+
+{% for prj in prjs.keys()|sort %}
+  {% for (mstid, mst) in prjs[prj] %}
+task {{mstid}} "{{mst}}" {
+  flags maintask
+    maxend {{msts[mst]['due']}}
+
+}
+  {% endfor %}
+{% endfor %}

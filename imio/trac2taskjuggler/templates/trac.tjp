@@ -20,3 +20,40 @@ leaves holiday "Doudou" 2014-06-12 +2d
 #    , holiday "" 2015--
 
 include "resources.tji"
+include "tasks.tji"
+
+# Reports
+
+macro TaskTip [
+  tooltip istask() -8<-
+    '''Start: ''' <-query attribute='start'->
+    '''End: ''' <-query attribute='end'->
+    ----
+    '''Resources:'''
+
+    <-query attribute='resources'->
+    ----
+    '''Precursors: '''
+
+    <-query attribute='precursors'->
+    ----
+    '''Followers: '''
+
+    <-query attribute='followers'->
+    ->8-
+]
+
+textreport frame "" {
+  textreport index "Overview" {
+    formats html
+    center '<[report id="overview"]>'
+  }
+}
+
+taskreport overview "" {
+  columns bsi { title 'WBS' },
+          name, start, end, effort, complete, duration, gauge,
+          chart {scale day width 10000}
+#    rolluptask maintask
+    loadunit hours
+}
