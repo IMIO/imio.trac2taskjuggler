@@ -10,7 +10,13 @@ flags {{prj}}
 task {{mstid}} "{{mst}}" {
   flags maintask
     maxend {{msts[mst]['due']}}
-
+    {% for owner in msts[mst]['own'] %}
+  task {{msts[mst]['own'][owner]['t']|join('_')}} "{{owner}}" {
+    effort 2h
+    allocate sgeulette
+    flags subtask
+  }
+    {% endfor %}
 }
   {% endfor %}
 {% endfor %}

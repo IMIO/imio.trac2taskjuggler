@@ -15,9 +15,9 @@ select milestone
 , case when mst.due != 0 then to_char(to_timestamp(mst.due/1000000), 'YYYY-MM-DD') else '' end as due
 --, case when mst.completed != 0 then to_char(to_timestamp(mst.completed/1000000), 'YYYY-MM-DD') else '' end
 , id, summary, status, owner, component
-, dec_to_hour(CASE WHEN EstimatedHours.value = '' OR EstimatedHours.value IS NULL THEN 0
+, (CASE WHEN EstimatedHours.value = '' OR EstimatedHours.value IS NULL THEN 0
          ELSE CAST( EstimatedHours.value AS DECIMAL ) END) as Estimated_work
-, dec_to_hour(CASE WHEN totalhours.value = '' OR totalhours.value IS NULL THEN 0
+, (CASE WHEN totalhours.value = '' OR totalhours.value IS NULL THEN 0
          ELSE CAST( totalhours.value AS DECIMAL ) END) as Total_work
 , t.description
 from ticket as t
@@ -33,15 +33,17 @@ and milestone not ilike '% - SUP - %' and milestone not ilike 'IMIO - %'
 and status != 'CLOTURE'
 order by mst.due, milestone, id
 '''
-env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'), trim_blocks=True,
-                  lstrip_blocks=True)
+env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'),
+                  trim_blocks=True, lstrip_blocks=True)
 msts = {}
 msts_prj = {}
+tkts = {}
 PRJ_PATH = '%s/project' % os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
 outfiles = {'tjp': {'file': '%s/trac.tjp' % PRJ_PATH},
             'resources': {'file': '%s/resources.tji' % PRJ_PATH},
             'tasks': {'file': '%s/tasks.tji' % PRJ_PATH},
             }
+EFFORT_EXCEED_FACTOR = 0.5
 
 #------------------------------------------------------------------------------
 
@@ -63,11 +65,12 @@ def generate(dsn):
     records = selectWithSQLRequest(conn, query, TRACE=TRACE)
     conn.close()
     verbose("Records number: %d" % len(records))
-#("INFRA - MEP - Demande d'instance", 7919, 'Instance PST Walcourt', 'NOUVEAU', 'fngaha',
-#'Serveur, infrastructure (INFRA)', '15/05/2020', '2h', '', 'walcourt-prj.imio-app.be')
+#("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"', #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
     for rec in records:
         (mst, mst_due, id, summary, status, owner, prj, estimated, hours, description) = rec
         mst = mst.decode('utf8')
+        estimated = float(estimated)
+        hours = float(hours)
         try:
             mst_prj = mst.split(' - ')[0]
             if mst_prj not in PROJECTS:
@@ -78,10 +81,29 @@ def generate(dsn):
         if mst_prj not in msts_prj:
             msts_prj[mst_prj] = []
         if mst not in msts:
-            msts[mst] = {'prj': mst_prj, 'due': mst_due, 't': []}
+            msts[mst] = {'prj': mst_prj, 'due': mst_due, 't': [], 'own': {}}
             mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts_prj[mst_prj].append((mstid, mst))
         msts[mst]['t'].append(id)
+        if id in tkts:
+            error("Ticket '%s' already found in dict %s" % (id, tkts[id]))
+            continue
+        if not owner:
+            error("Ticket '%s' has no owner" % id)
+        tkts[id] = {'sum': summary, 'status': status, 'owner': owner, 'prj': prj,
+                    'estim': estimated, 'hours': hours}
+        if owner not in msts[mst]['own']:
+            msts[mst]['own'][owner] = {'effort': 0.0, 't': []}
+        msts[mst]['own'][owner]['t'].append(id)
+        if estimated == 0:
+            error("Owner '%s': estimated hour not set for ticket '%s'" % (owner, id))
+            continue
+        elif hours == 0:
+            msts[mst]['own'][owner]['effort'] += estimated
+        elif hours > estimated:
+            msts[mst]['own'][owner]['effort'] += (estimated * EFFORT_EXCEED_FACTOR)
+        else:
+            msts[mst]['own'][owner]['effort'] += (estimated - hours)
 
     # sort milestones by project and due date
     msts_prj[mst_prj].sort(cmp=cmp_mst)
