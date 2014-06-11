@@ -3,4 +3,4 @@
 Introduction
 ============
 
-Mail content type for document management system
+Extract content from trac and generate taskjuggler configuration files.
