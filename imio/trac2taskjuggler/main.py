@@ -77,7 +77,8 @@ def generate(dsn):
         estimated = float(estimated)
         hours = float(hours)
         try:
-            (mst_prj, mst_wrk, tit) = mst.split(' - ')
+            mst_list = mst.split(' - ')
+            (mst_prj, mst_wrk) = (mst_list[0], mst_list[1])
             if mst_prj not in PROJECTS:
                 error("Project 'mst_prj' not well extracted from '%s'" % (mst_prj, mst))
         except:
