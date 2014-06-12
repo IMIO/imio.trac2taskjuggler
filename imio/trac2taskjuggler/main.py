@@ -77,7 +77,7 @@ def generate(dsn):
         estimated = float(estimated)
         hours = float(hours)
         try:
-            mst_prj = mst.split(' - ')[0]
+            (mst_prj, mst_wrk, tit) = mst.split(' - ')
             if mst_prj not in PROJECTS:
                 error("Project 'mst_prj' not well extracted from '%s'" % (mst_prj, mst))
         except:
@@ -87,7 +87,7 @@ def generate(dsn):
             msts_prj[mst_prj] = []
         if mst not in msts:
             msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
-                         't': [], 'own': {}}
+                         't': [], 'own': {}, 'wrk': mst_wrk, 'dep': ''}
             mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts_prj[mst_prj].append((mstid, mst))
         msts[mst]['t'].append(id)
@@ -114,6 +114,14 @@ def generate(dsn):
 
     # sort milestones by project and due date
     msts_prj[mst_prj].sort(cmp=cmp_mst)
+    # calculate mst order
+    for prj in msts_prj:
+        prev_mst = {}
+        for (mstid, mst) in msts_prj[prj]:
+            wrk = msts[mst]['wrk']
+            if wrk in prev_mst:
+                msts[mst]['dep'] = prev_mst[wrk]
+            prev_mst[wrk] = mstid
 
     # generate trac.tjp file
     template = env.get_template('trac.tjp')

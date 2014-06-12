@@ -6,12 +6,11 @@ flags {{prj}}
 {% endfor %}
 
 {% for prj in prjs.keys()|sort %}
-  {% set prev_mst = '' %}
   {% for (mstid, mst) in prjs[prj] %}
 task {{mstid}} "{{mst}}" {
   flags maintask
-  {% if prev_mst %}
-  depends {{prev_mst}}
+  {% if msts[mst]['dep'] %}
+  depends {{msts[mst]['dep']}}
   {% endif %}
   maxend {{msts[mst]['due']}}
     {% for owner in msts[mst]['own'].keys()|sort %}
@@ -28,7 +27,6 @@ task {{mstid}} "{{mst}}" {
     flags subtask
   }
     {% endfor %}
-  {% set prev_mst = mstid %}
 }
   {% endfor %}
 {% endfor %}
