@@ -12,12 +12,15 @@ task {{mstid}} "{{mst}}" {
     maxend {{msts[mst]['due']}}
     {% for owner in msts[mst]['own'].keys()|sort %}
   task t{{msts[mst]['own'][owner]['t']|join('_')}} "{{owner}}" {
+    allocate {{owner}}
       {% if msts[mst]['own'][owner]['effort'] > 0 %}
     effort {{msts[mst]['own'][owner]['effort']|round(method='ceil')}}h
       {% else %}
     effort 0.5h
       {% endif %}
-    allocate {{owner}}
+      {% if msts[mst]['own'][owner]['effort'] > 0 %}
+    complete {{((msts[mst]['own'][owner]['done']/(msts[mst]['own'][owner]['effort']+msts[mst]['own'][owner]['done']))*100)|round|int}}
+      {% endif %}
     flags subtask
   }
     {% endfor %}
