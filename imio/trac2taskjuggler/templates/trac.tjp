@@ -51,9 +51,9 @@ textreport frame "" {
 }
 
 taskreport overview "" {
+  loadunit hours
   columns bsi { title 'WBS' },
-          name, start, end, effort, complete, duration, gauge,
+          name, start, end, effort, complete, gauge,
           chart {scale day width 10000}
 #    rolluptask maintask
-    loadunit hours
 }
