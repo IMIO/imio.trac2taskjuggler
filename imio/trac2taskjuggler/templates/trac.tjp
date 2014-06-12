@@ -1,4 +1,4 @@
-project imio "Planification depuis trac" {{ prj_start }} +1y {
+project imio "Planification depuis trac" {{ prj_start }} +1.5y {
     timingresolution 30 min
     timezone "Europe/Paris"
     currency "EUR"

@@ -11,24 +11,33 @@ resource dev "DLL" {
     limits { dailymax 5.4h }
   }
   resource anuyens "" {
+    limits { dailymax 4.7h }
   }
   resource bsuttor "" {
+    limits { dailymax 5.92h }
   }
   resource cdewilde "" {
+    limits { dailymax 6.17h }
   }
   resource fngaha "" {
+    limits { dailymax 4.75h }
   }
   resource gbastien "" {
+    limits { dailymax 6.34h }
   }
   resource mgennart "" {
   }
   resource osnickers "" {
+    limits { dailymax 3.47h }
   }
   resource sdelcourt "" {
+    limits { dailymax 6h }
   }
   resource sgeulette "" {
+    limits { dailymax 4.34h }
   }
   resource vantoine "" {
+    limits { dailymax 5.71h }
   }
 }
 
