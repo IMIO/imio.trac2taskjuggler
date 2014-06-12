@@ -30,6 +30,7 @@ LEFT JOIN milestone as mst ON mst.name = t.milestone
 where milestone != ''
 and mst.due != 0 AND mst.completed = 0
 and milestone not ilike '% - SUP - %' and milestone not ilike 'IMIO - %'
+and mst.due < 1528732800000000
 and status != 'CLOTURE'
 order by mst.due, milestone, id
 '''
@@ -61,6 +62,10 @@ def cmp_mst(x, y):
 
 def generate(dsn):
     """ Generate taskjuggler files from trac """
+    now = datetime.now()
+    prj_start = now - timedelta(minutes=now.minute) + timedelta(hours=1)
+    min_mst_due = prj_start + timedelta(days=1)
+    min_mst_due = datetime.strftime(min_mst_due, "%Y-%m-%d")
     conn = openConnection(dsn)
     records = selectWithSQLRequest(conn, query, TRACE=TRACE)
     conn.close()
@@ -81,7 +86,8 @@ def generate(dsn):
         if mst_prj not in msts_prj:
             msts_prj[mst_prj] = []
         if mst not in msts:
-            msts[mst] = {'prj': mst_prj, 'due': mst_due, 't': [], 'own': {}}
+            msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
+                         't': [], 'own': {}}
             mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts_prj[mst_prj].append((mstid, mst))
         msts[mst]['t'].append(id)
@@ -93,8 +99,9 @@ def generate(dsn):
         tkts[id] = {'sum': summary, 'status': status, 'owner': owner, 'prj': prj,
                     'estim': estimated, 'hours': hours}
         if owner not in msts[mst]['own']:
-            msts[mst]['own'][owner] = {'effort': 0.0, 't': []}
+            msts[mst]['own'][owner] = {'effort': 0.0, 't': [], 'done': 0.0}
         msts[mst]['own'][owner]['t'].append(id)
+        msts[mst]['own'][owner]['done'] += hours
         if estimated == 0:
             error("Owner '%s': estimated hour not set for ticket '%s'" % (owner, id))
             continue
@@ -109,8 +116,6 @@ def generate(dsn):
     msts_prj[mst_prj].sort(cmp=cmp_mst)
 
     # generate trac.tjp file
-    now = datetime.now()
-    prj_start = now - timedelta(minutes=now.minute) + timedelta(hours=1)
     template = env.get_template('trac.tjp')
     rendered = template.render(prj_start=datetime.strftime(prj_start, "%Y-%m-%d-%H:%M"))
     write_to(outfiles, 'tjp', rendered.encode('utf8'))
