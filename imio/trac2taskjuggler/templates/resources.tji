@@ -1,4 +1,5 @@
 flags dll
+flags ext
 
 resource dev "DLL" {
   flags dll
@@ -13,6 +14,8 @@ resource dev "DLL" {
   }
   resource bsuttor "" {
   }
+  resource cdewilde "" {
+  }
   resource fngaha "" {
   }
   resource gbastien "" {
@@ -26,5 +29,21 @@ resource dev "DLL" {
   resource sgeulette "" {
   }
   resource vantoine "" {
+  }
+}
+
+resource ext "Externes" {
+  flags ext
+  resource jfroche "" {
+  }
+  resource gotcha "" {
+  }
+  resource llasudry "" {
+  }
+  resource mcervello "" {
+  }
+  resource mpeeters "" {
+  }
+  resource ndufrane "" {
   }
 }
