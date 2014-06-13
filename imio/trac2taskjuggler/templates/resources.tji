@@ -4,9 +4,6 @@ flags ext
 resource dev "DLL" {
   flags dll
   resource example "" {
-    # leaves : indique une absence d'un certain type; annual: congé, sick: maladie, special: extra (récup, etc.)
-    # ... date : date de départ + durée du congé en jours calendrier
-    leaves annual 2014-06-10 +2d   # => congé les 11 et 12 juin
     # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
     limits { dailymax 5.4h }
   }
@@ -34,9 +31,6 @@ resource dev "DLL" {
     limits { dailymax 6h }
   }
   resource sgeulette "sgeulette" {
-    leaves special 2014-07-07 +5d, special 2014-07-14 +5d
-      , annual 2014-07-28 +5d
-      , annual 2014-09-10 +3d, annual 2014-09-15 +5d
     limits { dailymax 4.34h }
   }
   resource vantoine "vantoine" {
