@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 from datetime import datetime, timedelta
 from jinja2 import Environment, PackageLoader
 from slugify import slugify
-from imio.pyutils.postgres import openConnection, selectWithSQLRequest
+from imio.pyutils.postgres import selectWithSQLRequest, selectAllInTable
 from imio.pyutils.system import verbose, error, write_to, close_outfiles
 from config import PROJECTS
 
@@ -39,6 +40,9 @@ env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'),
 msts = {}
 msts_prj = {}
 tkts = {}
+leaves = {}
+date_pat = re.compile('^\d{4}-\d{2}-\d{2}$')
+duration_pat = re.compile('^\+\d+(d|h|min)$')
 PRJ_PATH = '%s/project' % os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
 outfiles = {'tjp': {'file': '%s/trac.tjp' % PRJ_PATH},
             'resources': {'file': '%s/resources.tji' % PRJ_PATH},
@@ -60,17 +64,50 @@ def cmp_mst(x, y):
 #------------------------------------------------------------------------------
 
 
+def getLeaves(dsn):
+    """ Get the leaves encoded in trac """
+    records = selectAllInTable(dsn, 'ticket', 'owner, description',
+                               condition="milestone = 'IMIO - INT - Congés et absences'")
+    for rec in records:
+        (owner, description) = rec
+        res = []
+        try:
+            lvs = description.split(',')
+            for lv in lvs:
+                lv = lv.strip('\r\n ')
+                if not lv:
+                    continue
+                parts = lv.split(' ')
+                if len(parts) == 4 and parts[3] in ('d', 'h', 'min'):
+                    parts[2] += parts[3]
+                if parts[0] not in ('annual', 'sick', 'special'):
+                    error("Leaves problem in '%s' (%s): bad leave type" % (description, owner))
+                    continue
+                if not re.match(date_pat, parts[1]):
+                    error("Leaves problem in '%s' (%s): bad date format" % (description, owner))
+                    continue
+                if not re.match(duration_pat, parts[2]):
+                    error("Leaves problem in '%s' (%s): bad date format" % (description, owner))
+                    continue
+                res.append(' '.join(parts[:3]))
+            if res:
+                leaves[owner] = ', '.join(res)
+        except Exception, exc:
+            error("Leaves analysis exception in '%s' (%s): %s" % (description, owner, exc))
+
+#------------------------------------------------------------------------------
+
+
 def generate(dsn):
     """ Generate taskjuggler files from trac """
     now = datetime.now()
     prj_start = now - timedelta(minutes=now.minute) + timedelta(hours=1)
     min_mst_due = prj_start + timedelta(days=1)
     min_mst_due = datetime.strftime(min_mst_due, "%Y-%m-%d")
-    conn = openConnection(dsn)
-    records = selectWithSQLRequest(conn, query, TRACE=TRACE)
-    conn.close()
+    records = selectWithSQLRequest(dsn, query, TRACE=TRACE)
     verbose("Records number: %d" % len(records))
-#("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"', #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
+#("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"',
+#'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
     for rec in records:
         (mst, mst_due, id, summary, status, owner, prj, estimated, hours, description) = rec
         mst = mst.decode('utf8')
@@ -129,8 +166,9 @@ def generate(dsn):
     rendered = template.render(prj_start=datetime.strftime(prj_start, "%Y-%m-%d-%H:%M"))
     write_to(outfiles, 'tjp', rendered.encode('utf8'))
     # generate resources.tji
+    getLeaves(dsn)
     template = env.get_template('resources.tji')
-    rendered = template.render()
+    rendered = template.render(leaves=leaves)
     write_to(outfiles, 'resources', rendered.encode('utf8'))
     # generate tasks.tji
     template = env.get_template('tasks.tji')

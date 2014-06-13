@@ -3,38 +3,65 @@ flags ext
 
 resource dev "DLL" {
   flags dll
-  resource example "" {
-    # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
-    limits { dailymax 5.4h }
-  }
+# limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
   resource anuyens "anuyens" {
     limits { dailymax 4.7h }
+  {% if 'anuyens' in leaves %}
+    leaves {{leaves['anuyens']}}
+  {% endif %}
   }
   resource bsuttor "bsuttor" {
     limits { dailymax 5.92h }
+  {% if 'bsuttor' in leaves %}
+    leaves {{leaves['bsuttor']}}
+  {% endif %}
   }
   resource cdewilde "cdewilde" {
     limits { dailymax 6.17h }
+  {% if 'cdewilde' in leaves %}
+    leaves {{leaves['cdewilde']}}
+  {% endif %}
   }
   resource fngaha "fngaha" {
     limits { dailymax 4.75h }
+  {% if 'fngaha' in leaves %}
+    leaves {{leaves['fngaha']}}
+  {% endif %}
   }
   resource gbastien "gbastien" {
     limits { dailymax 6.34h }
+  {% if 'gbastien' in leaves %}
+    leaves {{leaves['gbastien']}}
+  {% endif %}
   }
   resource mgennart "mgennart" {
+  {% if 'mgennart' in leaves %}
+    leaves {{leaves['mgennart']}}
+  {% endif %}
   }
   resource osnickers "osnickers" {
     limits { dailymax 3.47h }
+  {% if 'osnickers' in leaves %}
+    leaves {{leaves['osnickers']}}
+  {% endif %}
   }
   resource sdelcourt "sdelcourt" {
     limits { dailymax 6h }
+  {% if 'sdelcourt' in leaves %}
+    leaves {{leaves['sdelcourt']}}
+  {% endif %}
   }
   resource sgeulette "sgeulette" {
     limits { dailymax 4.34h }
+  {% if 'sgeulette' in leaves %}
+    leaves {{leaves['sgeulette']}}
+  {% endif %}
   }
   resource vantoine "vantoine" {
     limits { dailymax 5.71h }
+  {% if 'vantoine' in leaves %}
+    leaves {{leaves['vantoine']}}
+  {% endif %}
   }
 }
 
