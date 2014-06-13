@@ -10,49 +10,52 @@ resource dev "DLL" {
     # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
     limits { dailymax 5.4h }
   }
-  resource anuyens "" {
+  resource anuyens "anuyens" {
     limits { dailymax 4.7h }
   }
-  resource bsuttor "" {
+  resource bsuttor "bsuttor" {
     limits { dailymax 5.92h }
   }
-  resource cdewilde "" {
+  resource cdewilde "cdewilde" {
     limits { dailymax 6.17h }
   }
-  resource fngaha "" {
+  resource fngaha "fngaha" {
     limits { dailymax 4.75h }
   }
-  resource gbastien "" {
+  resource gbastien "gbastien" {
     limits { dailymax 6.34h }
   }
-  resource mgennart "" {
+  resource mgennart "mgennart" {
   }
-  resource osnickers "" {
+  resource osnickers "osnickers" {
     limits { dailymax 3.47h }
   }
-  resource sdelcourt "" {
+  resource sdelcourt "sdelcourt" {
     limits { dailymax 6h }
   }
-  resource sgeulette "" {
+  resource sgeulette "sgeulette" {
+    leaves special 2014-07-07 +5d, special 2014-07-14 +5d
+      , annual 2014-07-28 +5d
+      , annual 2014-09-10 +3d, annual 2014-09-15 +5d
     limits { dailymax 4.34h }
   }
-  resource vantoine "" {
+  resource vantoine "vantoine" {
     limits { dailymax 5.71h }
   }
 }
 
 resource ext "Externes" {
   flags ext
-  resource jfroche "" {
+  resource jfroche "jfroche" {
   }
-  resource gotcha "" {
+  resource gotcha "gotcha" {
   }
-  resource llasudry "" {
+  resource llasudry "llasudry" {
   }
-  resource mcervello "" {
+  resource mcervello "mcervello" {
   }
-  resource mpeeters "" {
+  resource mpeeters "mpeeters" {
   }
-  resource ndufrane "" {
+  resource ndufrane "ndufrane" {
   }
 }
