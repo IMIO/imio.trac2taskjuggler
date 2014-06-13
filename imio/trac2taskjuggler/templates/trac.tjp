@@ -43,6 +43,11 @@ macro TaskTip [
     ->8-
 ]
 
+macro MaxendCellColor [
+cellcolor ~isleaf() & (plan.end > plan.maxend) '#FF0000'  # red
+cellcolor ~isleaf() & (plan.end <= plan.maxend) '#00FF00'  # green
+]
+
 navigator navbar {
   hidereport @none
 }
@@ -71,7 +76,8 @@ textreport frame "" {
 taskreport overview "" {
   loadunit hours
   columns bsi { title 'WBS' },
-          name, start, end, effort, complete, gauge,
+          name, start, end, maxend {${MaxendCellColor}},
+          effort, complete, gauge,
           chart {scale day width 10000}
 #    rolluptask maintask
 }
