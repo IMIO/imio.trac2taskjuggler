@@ -10,7 +10,7 @@ flags {{prj}}
 task {{mstid}} "{{mst}}" {
   flags maintask
   {% if msts[mst]['dep'] %}
-  depends {{msts[mst]['dep']}}
+  depends {{msts[mst]['dep']|join(', ')}}
   {% endif %}
   maxend {{msts[mst]['due']}}
     {% for owner in msts[mst]['own'].keys()|sort %}

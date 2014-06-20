@@ -40,6 +40,7 @@ env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'),
 msts = {}
 msts_prj = {}
 tkts = {}
+tkts_links = {}
 leaves = {}
 date_pat = re.compile('^\d{4}-\d{2}-\d{2}$')
 duration_pat = re.compile('^\+\d+(d|h|min)$')
@@ -98,12 +99,26 @@ def getLeaves(dsn):
 #------------------------------------------------------------------------------
 
 
+def getBlockingTickets(dsn):
+    """ Get the blocking tickets encoded in the trac """
+    records = selectAllInTable(dsn, 'mastertickets', 'source, dest')
+    for rec in records:
+        (src, dest) = rec
+        if dest not in tkts_links:
+            tkts_links[dest] = []
+        if src not in tkts_links[dest]:
+            tkts_links[dest].append(src)
+
+#------------------------------------------------------------------------------
+
+
 def generate(dsn):
     """ Generate taskjuggler files from trac """
     now = datetime.now()
     prj_start = now - timedelta(minutes=now.minute) + timedelta(hours=1)
     min_mst_due = prj_start + timedelta(days=1)
     min_mst_due = datetime.strftime(min_mst_due, "%Y-%m-%d")
+    getBlockingTickets(dsn)
     records = selectWithSQLRequest(dsn, query, TRACE=TRACE)
     verbose("Records number: %d" % len(records))
 #("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"',
@@ -124,9 +139,9 @@ def generate(dsn):
         if mst_prj not in msts_prj:
             msts_prj[mst_prj] = []
         if mst not in msts:
-            msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
-                         't': [], 'own': {}, 'wrk': mst_wrk, 'dep': ''}
             mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
+            msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
+                         't': [], 'own': {}, 'wrk': mst_wrk, 'dep': [], 'id': mstid}
             msts_prj[mst_prj].append((mstid, mst))
         msts[mst]['t'].append(id)
         if id in tkts:
@@ -135,7 +150,7 @@ def generate(dsn):
         if not owner:
             error("Ticket '%s' has no owner" % id)
         tkts[id] = {'sum': summary, 'status': status, 'owner': owner, 'prj': prj,
-                    'estim': estimated, 'hours': hours}
+                    'estim': estimated, 'hours': hours, 'mst': mst}
         if owner not in msts[mst]['own']:
             msts[mst]['own'][owner] = {'effort': 0.0, 't': [], 'done': 0.0}
         msts[mst]['own'][owner]['t'].append(id)
@@ -152,14 +167,26 @@ def generate(dsn):
 
     # sort milestones by project and due date
     msts_prj[mst_prj].sort(cmp=cmp_mst)
-    # calculate mst order
-    for prj in msts_prj:
-        prev_mst = {}
-        for (mstid, mst) in msts_prj[prj]:
-            wrk = msts[mst]['wrk']
-            if wrk in prev_mst:
-                msts[mst]['dep'] = prev_mst[wrk]
-            prev_mst[wrk] = mstid
+    # calculate mst order: one after one in each project
+#    for prj in msts_prj:
+#        prev_mst = {}
+#        for (mstid, mst) in msts_prj[prj]:
+#            wrk = msts[mst]['wrk']
+#            if wrk in prev_mst:
+#                msts[mst]['dep'] = prev_mst[wrk]
+#            prev_mst[wrk] = mstid
+    # find blocking milestone from blocking tickets
+    for mst in msts:
+        for tkt in msts[mst]['t']:
+            if tkt not in tkts_links:
+                continue  # no blocking
+            for blck in tkts_links[tkt]:
+                if not blck in tkts:
+                    error("Blocking ticket '%s' not found in due milestone tickets" % blck)
+                    continue
+                blck_mst = msts[tkts[blck]['mst']]['id']
+                if blck_mst not in msts[mst]['dep']:
+                    msts[mst]['dep'].append(blck_mst)
 
     # generate trac.tjp file
     template = env.get_template('trac.tjp')
