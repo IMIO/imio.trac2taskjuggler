@@ -38,7 +38,7 @@ order by mst.due, milestone, id
 env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'),
                   trim_blocks=True, lstrip_blocks=True)
 msts = {}
-msts_prj = {}
+msts_due = {}
 tkts = {}
 tkts_links = {}
 leaves = {}
@@ -136,13 +136,17 @@ def generate(dsn):
         except:
             error("Project cannot be extracted from '%s'" % (mst))
         #due = datetime.strptime(mst_due, '%Y/%m/%d').date()
-        if mst_prj not in msts_prj:
-            msts_prj[mst_prj] = []
+        if mst_prj not in msts_due:
+            msts_due[mst_prj] = {}
+        if mst_wrk not in msts_due[mst_prj]:
+            msts_due[mst_prj][mst_wrk] = {}
+        if mst_due not in msts_due[mst_prj][mst_wrk]:
+            msts_due[mst_prj][mst_wrk][mst_due] = []
         if mst not in msts:
             mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
-                         't': [], 'own': {}, 'wrk': mst_wrk, 'dep': [], 'id': mstid}
-            msts_prj[mst_prj].append((mstid, mst))
+                         't': [], 'own': {}, 'wrk': mst_wrk, 'dep': [], 'id': mstid, 'prty': 1}
+            msts_due[mst_prj][mst_wrk][mst_due].append(mst)
         msts[mst]['t'].append(id)
         if id in tkts:
             error("Ticket '%s' already found in dict %s" % (id, tkts[id]))
@@ -165,16 +169,15 @@ def generate(dsn):
         else:
             msts[mst]['own'][owner]['effort'] += (estimated - hours)
 
-    # sort milestones by project and due date
-    msts_prj[mst_prj].sort(cmp=cmp_mst)
-    # calculate mst order: one after one in each project
-#    for prj in msts_prj:
-#        prev_mst = {}
-#        for (mstid, mst) in msts_prj[prj]:
-#            wrk = msts[mst]['wrk']
-#            if wrk in prev_mst:
-#                msts[mst]['dep'] = prev_mst[wrk]
-#            prev_mst[wrk] = mstid
+    # calculate mst order: set the priority
+    for prj in msts_due:
+        for wrk in msts_due[prj]:
+            p = 1000
+            for due in sorted(msts_due[prj][wrk]):  # sorted by due date
+                for mst in msts_due[prj][wrk][due]:
+                    if p > 1:
+                        msts[mst]['prty'] = p
+                p -= 50
     # find blocking milestone from blocking tickets
     for mst in msts:
         for tkt in msts[mst]['t']:
@@ -199,7 +202,7 @@ def generate(dsn):
     write_to(outfiles, 'resources', rendered.encode('utf8'))
     # generate tasks.tji
     template = env.get_template('tasks.tji')
-    rendered = template.render(prjs=msts_prj, msts=msts)
+    rendered = template.render(prjs=msts_due, msts=msts)
     write_to(outfiles, 'tasks', rendered.encode('utf8'))
 
     close_outfiles(outfiles)

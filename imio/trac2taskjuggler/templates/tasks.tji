@@ -6,13 +6,16 @@ flags {{prj}}
 {% endfor %}
 
 {% for prj in prjs.keys()|sort %}
-  {% for (mstid, mst) in prjs[prj] %}
-task {{mstid}} "{{mst}}" {
+  {% for wrk in prjs[prj]|sort %}
+    {% for due in prjs[prj][wrk]|sort %}
+      {% for mst in prjs[prj][wrk][due]|sort %}
+task {{msts[mst]['id']}} "{{mst}}" {
   flags maintask
   {% if msts[mst]['dep'] %}
   depends {{msts[mst]['dep']|join(', ')}}
   {% endif %}
   maxend {{msts[mst]['due']}}
+  priority {{msts[mst]['prty']}}
     {% for owner in msts[mst]['own'].keys()|sort %}
   task t{{msts[mst]['own'][owner]['t']|join('_')}} "{{owner}}" {
     allocate {{owner}}
@@ -28,5 +31,7 @@ task {{mstid}} "{{mst}}" {
   }
     {% endfor %}
 }
+      {% endfor %}
+    {% endfor %}
   {% endfor %}
 {% endfor %}
