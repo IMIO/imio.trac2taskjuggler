@@ -4,7 +4,7 @@ import os
 import re
 from datetime import datetime, timedelta
 from jinja2 import Environment, PackageLoader
-from slugify import slugify
+from slugify import unique_slugify
 from imio.pyutils.postgres import selectWithSQLRequest, selectAllInTable
 from imio.pyutils.system import verbose, error, write_to, close_outfiles
 from config import PROJECTS
@@ -143,7 +143,7 @@ def generate(dsn):
         if mst_due not in msts_due[mst_prj][mst_wrk]:
             msts_due[mst_prj][mst_wrk][mst_due] = []
         if mst not in msts:
-            mstid = slugify(mst, separator='_', unique_id=True).encode('utf8')
+            mstid = unique_slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
                          't': [], 'own': {}, 'wrk': mst_wrk, 'dep': [], 'id': mstid, 'prty': 1}
             msts_due[mst_prj][mst_wrk][mst_due].append(mst)
