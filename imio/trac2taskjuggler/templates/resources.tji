@@ -1,5 +1,8 @@
 flags dll
 flags ext
+{% for prj in prjs.keys()|sort %}
+flags {{prj}}
+{% endfor %}
 
 resource dev "DLL" {
   flags dll
@@ -9,11 +12,17 @@ resource dev "DLL" {
   {% if 'anuyens' in leaves %}
     leaves {{leaves['anuyens']}}
   {% endif %}
+  {% if 'anuyens' in resources %}
+    flags {{resources['anuyens']|sort|join(', ')}}
+  {% endif %}
   }
   resource bsuttor "bsuttor" {
     limits { dailymax 5.92h }
   {% if 'bsuttor' in leaves %}
     leaves {{leaves['bsuttor']}}
+  {% endif %}
+  {% if 'bsuttor' in resources %}
+    flags {{resources['bsuttor']|sort|join(', ')}}
   {% endif %}
   }
   resource cdewilde "cdewilde" {
@@ -21,11 +30,17 @@ resource dev "DLL" {
   {% if 'cdewilde' in leaves %}
     leaves {{leaves['cdewilde']}}
   {% endif %}
+  {% if 'cdewilde' in resources %}
+    flags {{resources['cdewilde']|sort|join(', ')}}
+  {% endif %}
   }
   resource fngaha "fngaha" {
     limits { dailymax 4.75h }
   {% if 'fngaha' in leaves %}
     leaves {{leaves['fngaha']}}
+  {% endif %}
+  {% if 'fngaha' in resources %}
+    flags {{resources['fngaha']|sort|join(', ')}}
   {% endif %}
   }
   resource gbastien "gbastien" {
@@ -33,10 +48,16 @@ resource dev "DLL" {
   {% if 'gbastien' in leaves %}
     leaves {{leaves['gbastien']}}
   {% endif %}
+  {% if 'gbastien' in resources %}
+    flags {{resources['gbastien']|sort|join(', ')}}
+  {% endif %}
   }
   resource mgennart "mgennart" {
   {% if 'mgennart' in leaves %}
     leaves {{leaves['mgennart']}}
+  {% endif %}
+  {% if 'mgennart' in resources %}
+    flags {{resources['mgennart']|sort|join(', ')}}
   {% endif %}
   }
   resource osnickers "osnickers" {
@@ -44,11 +65,17 @@ resource dev "DLL" {
   {% if 'osnickers' in leaves %}
     leaves {{leaves['osnickers']}}
   {% endif %}
+  {% if 'osnickers' in resources %}
+    flags {{resources['osnickers']|sort|join(', ')}}
+  {% endif %}
   }
   resource sdelcourt "sdelcourt" {
     limits { dailymax 6h }
   {% if 'sdelcourt' in leaves %}
     leaves {{leaves['sdelcourt']}}
+  {% endif %}
+  {% if 'sdelcourt' in resources %}
+    flags {{resources['sdelcourt']|sort|join(', ')}}
   {% endif %}
   }
   resource sgeulette "sgeulette" {
@@ -56,11 +83,17 @@ resource dev "DLL" {
   {% if 'sgeulette' in leaves %}
     leaves {{leaves['sgeulette']}}
   {% endif %}
+  {% if 'sgeulette' in resources %}
+    flags {{resources['sgeulette']|sort|join(', ')}}
+  {% endif %}
   }
   resource vantoine "vantoine" {
     limits { dailymax 5.71h }
   {% if 'vantoine' in leaves %}
     leaves {{leaves['vantoine']}}
+  {% endif %}
+  {% if 'vantoine' in resources %}
+    flags {{resources['vantoine']|sort|join(', ')}}
   {% endif %}
   }
 }
@@ -68,15 +101,33 @@ resource dev "DLL" {
 resource ext "Externes" {
   flags ext
   resource jfroche "jfroche" {
+  {% if 'jfroche' in resources %}
+    flags {{resources['jfroche']|sort|join(', ')}}
+  {% endif %}
   }
   resource gotcha "gotcha" {
+  {% if 'gotcha' in resources %}
+    flags {{resources['gotcha']|sort|join(', ')}}
+  {% endif %}
   }
   resource llasudry "llasudry" {
+  {% if 'llasudry' in resources %}
+    flags {{resources['llasudry']|sort|join(', ')}}
+  {% endif %}
   }
   resource mcervello "mcervello" {
+  {% if 'mcervello' in resources %}
+    flags {{resources['mcervello']|sort|join(', ')}}
+  {% endif %}
   }
   resource mpeeters "mpeeters" {
+  {% if 'mpeeters' in resources %}
+    flags {{resources['mpeeters']|sort|join(', ')}}
+  {% endif %}
   }
   resource ndufrane "ndufrane" {
+  {% if 'ndufrane' in resources %}
+    flags {{resources['ndufrane']|sort|join(', ')}}
+  {% endif %}
   }
 }

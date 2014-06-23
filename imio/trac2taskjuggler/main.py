@@ -42,6 +42,7 @@ msts_due = {}
 tkts = {}
 tkts_links = {}
 leaves = {}
+resources = {}
 date_pat = re.compile('^\d{4}-\d{2}-\d{2}$')
 duration_pat = re.compile('^\+\d+(d|h|min)$')
 PRJ_PATH = '%s/project' % os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
@@ -169,6 +170,10 @@ def generate(dsn):
             msts[mst]['own'][owner]['effort'] += (estimated * EFFORT_EXCEED_FACTOR)
         else:
             msts[mst]['own'][owner]['effort'] += (estimated - hours)
+        if owner not in resources:
+            resources[owner] = {}
+        if mst_prj not in resources[owner]:
+            resources[owner][mst_prj] = 0
 
     # calculate mst order: set the priority
     for prj in msts_due:
@@ -199,7 +204,7 @@ def generate(dsn):
     # generate resources.tji
     getLeaves(dsn)
     template = env.get_template('resources.tji')
-    rendered = template.render(leaves=leaves)
+    rendered = template.render(leaves=leaves, resources=resources, prjs=msts_due)
     write_to(outfiles, 'resources', rendered.encode('utf8'))
     # generate reports.tji
     template = env.get_template('reports.tji')
