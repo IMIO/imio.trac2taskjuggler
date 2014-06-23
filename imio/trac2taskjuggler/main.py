@@ -47,6 +47,7 @@ duration_pat = re.compile('^\+\d+(d|h|min)$')
 PRJ_PATH = '%s/project' % os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
 outfiles = {'tjp': {'file': '%s/trac.tjp' % PRJ_PATH},
             'resources': {'file': '%s/resources.tji' % PRJ_PATH},
+            'reports': {'file': '%s/reports.tji' % PRJ_PATH},
             'tasks': {'file': '%s/tasks.tji' % PRJ_PATH},
             }
 EFFORT_EXCEED_FACTOR = 0.5
@@ -200,6 +201,10 @@ def generate(dsn):
     template = env.get_template('resources.tji')
     rendered = template.render(leaves=leaves)
     write_to(outfiles, 'resources', rendered.encode('utf8'))
+    # generate reports.tji
+    template = env.get_template('reports.tji')
+    rendered = template.render(prjs=msts_due)
+    write_to(outfiles, 'reports', rendered.encode('utf8'))
     # generate tasks.tji
     template = env.get_template('tasks.tji')
     rendered = template.render(prjs=msts_due, msts=msts)

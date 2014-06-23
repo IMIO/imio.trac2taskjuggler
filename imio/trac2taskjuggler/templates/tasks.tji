@@ -10,7 +10,7 @@ flags {{prj}}
     {% for due in prjs[prj][wrk]|sort %}
       {% for mst in prjs[prj][wrk][due]|sort %}
 task {{msts[mst]['id']}} "{{mst}}" {
-  flags maintask
+  flags maintask, {{prj}}
   {% if msts[mst]['dep'] %}
   depends {{msts[mst]['dep']|join(', ')}}
   {% endif %}

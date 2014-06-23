@@ -1,0 +1,59 @@
+textreport frame "" {
+  header -8<-
+    == Projections planification depuis le trac ==
+    <[navigator id="navbar"]>
+  ->8-
+  textreport index "Overview" {
+    formats html
+    center '<[report id="overview"]>'
+  }
+{% for prj in prjs.keys()|sort %}
+  textreport {{prj}} "{{prj}}" {
+    formats html
+    center '<[report id="{{prj}}_mst"]>'
+  }  
+{% endfor %}
+
+  textreport "ResourceGraph" {
+    formats html
+    title "Ressources"
+    center '<[report id="resourceGraph"]>'
+  }
+  textreport "ResourceGraphMst" {
+    formats html
+    title "Ressources Milestones"
+    center '<[report id="resourceGraphMst"]>'
+  }
+}
+
+taskreport overview "" {
+  loadunit hours
+  columns bsi { title 'WBS' },
+          name, start, end, maxend {${MaxendCellColor}},
+          effort, complete, gauge,
+          chart {scale day width 10000}
+#    rolluptask maintask
+}
+
+resourcereport resourceGraph "Ressources" {
+  columns name, effort, weekly {width 2000 ${TaskTip} }
+  loadunit days
+}
+
+resourcereport resourceGraphMst "Ressources Milestones" {
+  columns name, effort, weekly {width 2000 ${TaskTip} }
+  loadunit days
+  # We only want first level
+  hidetask isleaf()
+}
+
+{% for prj in prjs.keys()|sort %}
+taskreport {{prj}}_mst "" {
+  loadunit hours
+  columns bsi { title 'WBS' },
+          name, start, end, maxend {${MaxendCellColor}},
+          effort, complete, gauge,
+          chart {scale day width 10000}
+  hidetask ~{{prj}}
+}
+{% endfor %}
