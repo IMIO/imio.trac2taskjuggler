@@ -1,0 +1,81 @@
+We assume the installation in the folder /srv/trac2taskjuggler
+ (that can be changed) and on an ubuntu distribution.
+Your real username must replace in our commands the string "username".
+Each command, specified by the symbol ">", can be executed 
+ (without the symbol >).
+
+First we become root
+> sudo -s
+
+We install the common necessary libraries
+> apt-get install build-essential
+> apt-get install libreadline6-dev
+> apt-get install zlib1g-dev (support zlib)
+> apt-get install libbz2-dev
+> apt-get install libjpeg62-dev
+> apt-get install subversion
+> apt-get install git
+> apt-get install libpq-dev
+> apt-get install libxml2-dev
+> apt-get install libxslt1-dev
+
+We work in the folder /srv
+> cd /srv
+
+We change the owner of the folder to avoid continue working as root
+> chown -R username:username .
+
+We leave the user root.
+> exit
+
+We create some directories
+> mkdir install
+> cd install
+
+We install python2.7 that will be used to run the buildout and zope instance
+> wget http://www.python.org/ftp/python/2.7.7/Python-2.7.7.tgz
+> tar xvzf Python-2.7.7.tgz
+> cd Python-2.7.7
+> ./configure --prefix=/srv/python277
+> make
+> make install
+
+We install the python utility easy_install
+> cd /srv/install
+> wget http://peak.telecommunity.com/dist/ez_setup.py
+> /srv/python277/bin/python ez_setup.py
+
+We install the python utility virtualenv
+> /srv/python277/bin/easy_install virtualenv
+
+We can define a cache for buildout
+See http://www.imio.be/support/documentation/tutoriels/utilisation-dun-buildout/definition-dun-cache-pour-buildout/
+
+We download the buildout files in our folder
+> cd /srv
+> git clone https://github.com/IMIO/imio.trac2taskjuggler.git trac2taskjuggler
+> cd trac2taskjuggler
+
+We must use our new compiled python
+You can create a link to our virtualenv without modifying Makefile
+    "sudo ln -s /srv/python277/bin/virtualenv /usr/local/bin/virtualenv-2.7"
+OR
+We modify the Makefile file to indicate the real path of the virtualenv utility. 
+It's necessary to replace the line "virtualenv-2.7 --no-site-packages ." by
+    "/srv/python277/bin/virtualenv ."
+
+We modify the postgres connection chain in buildout.cfg
+
+we initialize the buildout
+> make bootstrap
+
+We execute the buildout after each modification in the buildout.cfg file
+> make buildout
+OR
+> bin/buildout -v
+
+We run the trac extraction and generate the taskjuggler configuration files
+> make trac
+
+We generate the taskjuggler report
+> make tj
