@@ -21,6 +21,7 @@ trac:
 .PHONY: tj
 tj:
 	if ! test -d project;then make trac;fi
+	cp custom.css project/output/css/
 	tj3  -o project/output project/trac.tjp
 
 .PHONY: cleanall
