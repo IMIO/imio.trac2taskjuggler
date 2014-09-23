@@ -17,7 +17,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource bsuttor "bsuttor" {
-    limits { dailymax 5.92h }
+    limits { dailymax 5.5h }
   {% if 'bsuttor' in leaves %}
     leaves {{leaves['bsuttor']}}
   {% endif %}
@@ -26,7 +26,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource cdewilde "cdewilde" {
-    limits { dailymax 6.17h }
+    limits { dailymax 3.99h }
   {% if 'cdewilde' in leaves %}
     leaves {{leaves['cdewilde']}}
   {% endif %}
@@ -35,7 +35,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource fngaha "fngaha" {
-    limits { dailymax 4.75h }
+    limits { dailymax 4.46h }
   {% if 'fngaha' in leaves %}
     leaves {{leaves['fngaha']}}
   {% endif %}
@@ -44,7 +44,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource gbastien "gbastien" {
-    limits { dailymax 6.34h }
+    limits { dailymax 5.8h }
   {% if 'gbastien' in leaves %}
     leaves {{leaves['gbastien']}}
   {% endif %}
@@ -53,6 +53,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource mgennart "mgennart" {
+    limits { dailymax 2.29h }
   {% if 'mgennart' in leaves %}
     leaves {{leaves['mgennart']}}
   {% endif %}
@@ -61,7 +62,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource osnickers "osnickers" {
-    limits { dailymax 3.47h }
+    limits { dailymax 4.37h }
   {% if 'osnickers' in leaves %}
     leaves {{leaves['osnickers']}}
   {% endif %}
@@ -79,16 +80,17 @@ resource dev "DLL" {
   {% endif %}
   }
   resource sgeulette "sgeulette" {
-    limits { dailymax 4.34h }
+    limits { dailymax 4.14h }
   {% if 'sgeulette' in leaves %}
     leaves {{leaves['sgeulette']}}
   {% endif %}
   {% if 'sgeulette' in resources %}
     flags {{resources['sgeulette']|sort|join(', ')}}
   {% endif %}
+    workinghours fri off
   }
   resource vantoine "vantoine" {
-    limits { dailymax 5.71h }
+    limits { dailymax 5.03h }
   {% if 'vantoine' in leaves %}
     leaves {{leaves['vantoine']}}
   {% endif %}
