@@ -75,7 +75,7 @@ OR
 > bin/buildout -v
 
 We run the trac extraction and generate the taskjuggler configuration files
-> make trac
+> make generate_tj
 
 We generate the taskjuggler report
-> make tj
+> make report

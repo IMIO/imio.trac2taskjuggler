@@ -3,6 +3,7 @@ textreport frame "" {
   header -8<-
     == Projections planification depuis le trac ==
     <[navigator id="navbar"]>
+    [../index.html Index général]
   ->8-
   textreport index "Overview" {
     formats html

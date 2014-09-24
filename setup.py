@@ -31,5 +31,6 @@ setup(name='imio.trac2taskjuggler',
       entry_points="""
       [console_scripts]
       generate_tj = imio.trac2taskjuggler.main:generate
+      report = imio.trac2taskjuggler.report:generate
       """,
       )

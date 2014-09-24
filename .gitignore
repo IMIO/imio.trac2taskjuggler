@@ -10,6 +10,7 @@ bin/
 develop-eggs/
 include/
 lib/
+output/
 parts/
 project/
 src/*

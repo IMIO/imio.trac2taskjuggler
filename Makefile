@@ -12,17 +12,16 @@ buildout:
 	if ! test -f bin/buildout;then make bootstrap;fi
 	bin/buildout -v;
 
-.PHONY: trac
-trac:
+.PHONY: generate_tj
+generate_tj:
 	if ! test -f bin/generate_tj;then make buildout;fi
-	if ! test -d project;then mkdir -p project/output;fi
+	if ! test -d project;then mkdir -p project;fi
 	bin/generate_tj;
 
-.PHONY: tj
-tj:
-	if ! test -d project;then make trac;fi
-	cp custom.css project/output/css/
-	tj3  -o project/output project/trac.tjp
+.PHONY: report
+report:
+	if ! test -d project;then make generate_tj;fi
+	bin/report
 
 .PHONY: cleanall
 cleanall:
