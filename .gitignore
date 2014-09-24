@@ -9,10 +9,12 @@
 bin/
 develop-eggs/
 include/
+generation_errors.txt
 lib/
 output/
 parts/
 project/
+report_errors.txt
 src/*
 !src/collective/
 var/
