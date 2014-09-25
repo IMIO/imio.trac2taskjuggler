@@ -28,6 +28,7 @@ def generate(output_dir):
         os.makedirs(os.path.join(DAY_DIR, 'css'))
         os.symlink('%s/custom.css' % BUILD_PATH, '%s/css/custom.css' % DAY_DIR)
     outfiles['index']['file'] = os.path.join(output_dir, outfiles['index']['file'])
+    outfiles['index']['error'] = os.path.join(output_dir, outfiles['error']['file'])
     report_err = [outfiles['error']['file'], 0]
     verbose("Running command: %s" % rep_cmd)
     (cmd_out, cmd_err) = runCommand(rep_cmd)
@@ -37,7 +38,7 @@ def generate(output_dir):
         error("error running command %s : %s" % (rep_cmd, errors_str))
         write_to(outfiles, 'error', errors_str)
         report_err[1] = len(errors)
-    gen_err = ['%s/generation_errors.txt' % BUILD_PATH, 0]
+    gen_err = ['%s/generation_errors.txt' % output_dir, 0]
     if os.path.exists(gen_err[0]):
         lines = read_file(gen_err[0], skip_empty=True)
         if lines:
