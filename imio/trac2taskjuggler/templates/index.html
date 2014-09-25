@@ -1,15 +1,72 @@
 <html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+</head>
+<body>
+<a style="float:right;" href="#help">Aide</a>
 {% if gen_err[1] %}
-<p><em>Extraction errors: </em><a href="{{gen_err[0]}}">{{gen_err[1]}}</a></p>
+<p><em style="color:red">Erreurs d'extraction: </em><a href="{{gen_err[0]}}">{{gen_err[1]}}</a></p>
 {% endif%}
 
 {% if report_err[1] %}
-<p><em>Report errors: </em><a href="{{report_err[0]}}">{{report_err[1]}}</a></p>
+<p><em style="color:red">Erreurs tj: </em><a href="{{report_err[0]}}">{{report_err[1]}}</a></p>
 {% endif%}
-
+<hr />
+<h2>Index</h2>
 <ul>
 {% for dir in olds|sort(reverse=True) %}
 <li><a href="{{dir}}/Overview.html">{{dir}}</a></li>
 {% endfor %}
 </ul>
+<hr />
+<h2 id="help">Aide</h2>
+<h3>Extraction du trac</h3>
+
+<p>Les tickets considérés dans la planification répondent aux critères suivants:</p>
+
+<ul>
+	<li>tickets des jalons ayant une date d'échéance et non clôturés (hormis les jalons de type " - SUP - " et "IMIO - ")</li>
+	<li>tickets non clôturés</li>
+	<li>la date d'échéance du jalon est inférieure au 11/06/2018 (certains jalons spéciaux ont une date d'échéance après)</li>
+</ul>
+
+<p>Chacun des tickets considérés doit avoir un responsable, et un temps de réalisation estimé.</p>
+
+<p>Les jours de congé futurs sont extraits pour chaque personne des tickets "Congés et absences".<br />
+Les jours de congé officiels fixes sont encodés directement dans TJ pour tout le monde.</p>
+
+<h3>Compilation des données</h3>
+
+<p>Les tickets sont regroupés par projet, jalon et responsable.<br />
+Le projet est extrait du titre du jalon.</p>
+
+<p>Le temps du travail encore à prester par ticket est fonction du temps estimé et du temps déjà presté.</p>
+
+<p>Si le temps déjà presté est supérieur au temps estimé, le temps encore à prester est évalué à la moitié du temps estimé.</p>
+
+<p>On ordonne les jalons suivant la date d'échéance, par projet et par type de travail, en donnant une priorité.<br />
+Les jalons qui ont une date d'échéance dans le passé sont réajustés à la date de génération + 1 (obligation pour TJ).<br />
+Une amélioration serait de fixer la priorité en ordonnant sur la date passée.</p>
+
+<p>Une erreur est mentionnée si:</p>
+
+<ul>
+	<li>le projet ne sait pas être extrait du titre</li>
+	<li>un ticket n'a pas de responsable</li>
+	<li>un ticket n'a pas d'estimation</li>
+</ul>
+
+<h3>Planification</h3>
+
+<p>TaskJuggler planifie les tâches suivant un algorithme interne. Il n'effectue pas de multiples calculs en série pour arriver au meilleur résultat (trop long).<br />
+Il peut donc placer certaines tâches (jalons et tickets) avant d'autres suivant ce qu'il a estimé être le mieux.</p>
+
+<p>Il est possible d'influencer TJ en définissant des priorités et des dépendances, ce qui est fait dans la phase de compilation des données.</p>
+
+<p>La priorité indiquée à TJ pour les jalons est dégressive en fonction de la date d'échéance, après regroupement par projet et type de tâche.</p>
+
+<p>Il est possible de forcer la réalisation d'un jalon avant un autre en utilisant dans le trac la notion de ticket bloquant.<br />
+Si un ticket du jalon B est bloqué par un ticket du jalon A, le jalon B sera planifié après le jalon A.<br />
+&nbsp;</p>
+</body>
 </html>

@@ -11,6 +11,7 @@ from config import PROJECTS
 
 
 TRACE = False
+# 1528732800000000 = 11/06/2018
 query = '''
 select milestone
 , case when mst.due != 0 then to_char(to_timestamp(mst.due/1000000), 'YYYY-MM-DD') else '' end as due
