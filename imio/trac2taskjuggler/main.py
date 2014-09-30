@@ -7,7 +7,7 @@ from jinja2 import Environment, PackageLoader
 from slugify import unique_slugify
 from imio.pyutils.postgres import selectWithSQLRequest, selectAllInTable
 from imio.pyutils.system import verbose, error, write_to, close_outfiles
-from config import PROJECTS
+from config import PROJECTS, TICKET_URL
 
 
 TRACE = False
@@ -70,10 +70,10 @@ def cmp_mst(x, y):
 
 def getLeaves(dsn):
     """ Get the leaves encoded in trac """
-    records = selectAllInTable(dsn, 'ticket', 'owner, description',
+    records = selectAllInTable(dsn, 'ticket', 'owner, description, id',
                                condition="milestone = 'IMIO - INT - Congés et absences'")
     for rec in records:
-        (owner, description) = rec
+        (owner, description, id) = rec
         res = []
         try:
             lvs = description.split(',')
@@ -85,19 +85,19 @@ def getLeaves(dsn):
                 if len(parts) == 4 and parts[3] in ('d', 'h', 'min'):
                     parts[2] += parts[3]
                 if parts[0] not in ('annual', 'sick', 'special'):
-                    error("Leaves problem in '%s' (%s): bad leave type" % (description, owner))
+                    error("Leaves problem in '%s' (%s, %s/%s): bad leave type" % (description, owner, TICKET_URL, id))
                     continue
                 if not re.match(date_pat, parts[1]):
-                    error("Leaves problem in '%s' (%s): bad date format" % (description, owner))
+                    error("Leaves problem in '%s' (%s, %s/%s): bad date format" % (description, owner, TICKET_URL, id))
                     continue
                 if not re.match(duration_pat, parts[2]):
-                    error("Leaves problem in '%s' (%s): bad date format" % (description, owner))
+                    error("Leaves problem in '%s' (%s, %s/%s): bad date format" % (description, owner, TICKET_URL, id))
                     continue
                 res.append(' '.join(parts[:3]))
             if res:
                 leaves[owner] = ', '.join(res)
         except Exception, exc:
-            error("Leaves analysis exception in '%s' (%s): %s" % (description, owner, exc))
+            error("Leaves analysis exception in '%s' (%s, %s/%s): %s" % (description, owner, TICKET_URL, id, exc))
 
 #------------------------------------------------------------------------------
 
@@ -135,9 +135,9 @@ def generate(dsn):
             mst_list = mst.split(' - ')
             (mst_prj, mst_wrk) = (mst_list[0], mst_list[1])
             if mst_prj not in PROJECTS:
-                error("Project 'mst_prj' not well extracted from '%s'" % (mst_prj, mst))
+                error("Project '%s' not well extracted from '%s' (%s, %s/%s)" % (mst_prj, mst, owner, TICKET_URL, id))
         except:
-            error("Project cannot be extracted from '%s'" % (mst))
+            error("Project cannot be extracted from '%s' (%s, %s/%s)" % (mst, owner, TICKET_URL, id))
         #due = datetime.strptime(mst_due, '%Y/%m/%d').date()
         if mst_prj not in msts_due:
             msts_due[mst_prj] = {}
@@ -152,10 +152,10 @@ def generate(dsn):
             msts_due[mst_prj][mst_wrk][mst_due].append(mst)
         msts[mst]['t'].append(id)
         if id in tkts:
-            error("Ticket '%s' already found in dict %s" % (id, tkts[id]))
+            error("Ticket '%s' already found in dict %s (%s, %s/%s)" % (id, tkts[id], owner, TICKET_URL, id))
             continue
         if not owner:
-            error("Ticket '%s' has no owner" % id)
+            error("Ticket '%s' has no owner (%s/%s)" % (id, TICKET_URL, id))
         tkts[id] = {'sum': summary, 'status': status, 'owner': owner, 'prj': prj,
                     'estim': estimated, 'hours': hours, 'mst': mst}
         if owner not in msts[mst]['own']:
@@ -163,7 +163,8 @@ def generate(dsn):
         msts[mst]['own'][owner]['t'].append(id)
         msts[mst]['own'][owner]['done'] += hours
         if estimated == 0:
-            error("Owner '%s': estimated hour not set for ticket '%s'" % (owner, id))
+            error("Estimated hour not set for ticket (%s, %s/%s)" %
+                  (owner, TICKET_URL, id))
             continue
         elif hours == 0:
             msts[mst]['own'][owner]['effort'] += estimated
@@ -192,7 +193,7 @@ def generate(dsn):
                 continue  # no blocking
             for blck in tkts_links[tkt]:
                 if not blck in tkts:
-                    error("Blocking ticket '%s' not found in due milestone tickets" % blck)
+                    error("Blocking ticket '%s/%s' not found in due milestone tickets" % (TICKET_URL, blck))
                     continue
                 blck_mst = msts[tkts[blck]['mst']]['id']
                 if blck_mst not in msts[mst]['dep']:
