@@ -28,7 +28,7 @@ def generate(output_dir):
         os.makedirs(os.path.join(DAY_DIR, 'css'))
         os.symlink('%s/custom.css' % BUILD_PATH, '%s/css/custom.css' % DAY_DIR)
     outfiles['index']['file'] = os.path.join(output_dir, outfiles['index']['file'])
-    outfiles['index']['error'] = os.path.join(output_dir, outfiles['error']['file'])
+    outfiles['error']['file'] = os.path.join(output_dir, outfiles['error']['file'])
     report_err = [os.path.basename(outfiles['error']['file']), 0]
     verbose("Running command: %s" % rep_cmd)
     (cmd_out, cmd_err) = runCommand(rep_cmd)
