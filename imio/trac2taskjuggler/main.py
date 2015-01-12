@@ -198,7 +198,8 @@ def generate(dsn):
                     error("Blocking ticket '%s/%s' not found in due milestone tickets" % (TICKET_URL, blck))
                     continue
                 blck_mst = msts[tkts[blck]['mst']]['id']
-                if blck_mst not in msts[mst]['dep']:
+                # skipping self milestone dependency
+                if tkts[blck]['mst'] != mst and blck_mst not in msts[mst]['dep']:
                     msts[mst]['dep'].append(blck_mst)
 
     # generate trac.tjp file
