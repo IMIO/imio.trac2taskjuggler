@@ -11,8 +11,8 @@ env = Environment(loader=PackageLoader('imio.trac2taskjuggler', 'templates'),
 BUILD_PATH = os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
 PRJ_PATH = '%s/project' % BUILD_PATH
 base_rep_cmd = 'tj3 --silent -o DAY_DIR %s/trac.tjp' % PRJ_PATH
-outfiles = {'index': {'file': 'index.html'},
-            'error': {'file': 'report_errors.txt'},
+outfiles = {'index': {'filename': 'index.html'},
+            'error': {'filename': 'report_errors.txt'},
             }
 
 #------------------------------------------------------------------------------
@@ -27,9 +27,9 @@ def generate(output_dir):
     if not os.path.exists(DAY_DIR):
         os.makedirs(os.path.join(DAY_DIR, 'css'))
         os.symlink('%s/custom.css' % BUILD_PATH, '%s/css/custom.css' % DAY_DIR)
-    outfiles['index']['file'] = os.path.join(output_dir, outfiles['index']['file'])
-    outfiles['error']['file'] = os.path.join(output_dir, outfiles['error']['file'])
-    report_err = [os.path.basename(outfiles['error']['file']), 0]
+    outfiles['index']['file'] = os.path.join(output_dir, outfiles['index']['filename'])
+    outfiles['error']['file'] = os.path.join(output_dir, outfiles['error']['filename'])
+    report_err = [os.path.basename(outfiles['error']['filename']), 0]
     verbose("Running command: %s" % rep_cmd)
     (cmd_out, cmd_err) = runCommand(rep_cmd)
     errors = [err for err in cmd_err if 'Error: ' in err]
@@ -38,9 +38,9 @@ def generate(output_dir):
         error("error running command %s : %s" % (rep_cmd, errors_str))
         write_to(outfiles, 'error', errors_str)
         report_err[1] = len(errors)
-    gen_err = [os.path.join(output_dir, 'generation_errors.txt'), 0]
+    gen_err = ['generation_errors.txt', 0]
     if os.path.exists(gen_err[0]):
-        lines = read_file(gen_err[0], skip_empty=True)
+        lines = read_file(os.path.join(output_dir, gen_err[0]), skip_empty=True)
         if lines:
             gen_err[1] = len(lines)
     olds = read_dir(output_dir, only_folders=True)
