@@ -38,7 +38,7 @@ def generate(output_dir):
         error("error running command %s : %s" % (rep_cmd, errors_str))
         write_to(outfiles, 'error', errors_str)
         report_err[1] = len(errors)
-    gen_err = ['generation_errors.txt', 0]
+    gen_err = [os.path.join(output_dir, 'generation_errors.txt'), 0]
     if os.path.exists(gen_err[0]):
         lines = read_file(gen_err[0], skip_empty=True)
         if lines:
