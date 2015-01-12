@@ -2,6 +2,7 @@
 
 import os
 import re
+import shutil
 from datetime import date
 from jinja2 import Environment, PackageLoader
 from imio.pyutils.system import verbose, error, write_to, close_outfiles, runCommand, read_file, read_dir
@@ -57,4 +58,7 @@ def generate(output_dir):
     rendered = template.render(report_err=report_err, gen_err=gen_err, olds=olds, records_nb=records_nb)
     write_to(outfiles, 'index', rendered.encode('utf8'))
     close_outfiles(outfiles)
+    # delete wrong generated folder
+    if report_err[1] and os.path.exists(DAY_DIR):
+        shutil.rmtree(DAY_DIR, ignore_errors=True)
     verbose("End of taskjuggler report")

@@ -16,7 +16,11 @@
 <h2>Index</h2>
 <ul>
 {% for dir in olds|sort(reverse=True) %}
+    {% if loop.first and report_err[1] %}
+<li>{{dir}}</li>
+    {% else %}
 <li><a href="{{dir}}/Overview.html">{{dir}}</a></li>
+    {% endif %}
 {% endfor %}
 </ul>
 <hr />
