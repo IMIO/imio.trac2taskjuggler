@@ -25,6 +25,15 @@ resource dev "DLL" {
     flags {{resources['bsuttor']|sort|join(', ')}}
   {% endif %}
   }
+  resource cboulanger "cboulanger" {
+    limits { dailymax 5h }
+  {% if 'cboulanger' in leaves %}
+    leaves {{leaves['cboulanger']}}
+  {% endif %}
+  {% if 'cboulanger' in resources %}
+    flags {{resources['cboulanger']|sort|join(', ')}}
+  {% endif %}
+  }
   resource cdewilde "cdewilde" {
     limits { dailymax 3.99h }
   {% if 'cdewilde' in leaves %}
