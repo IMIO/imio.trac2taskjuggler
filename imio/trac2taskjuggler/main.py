@@ -2,6 +2,7 @@
 
 import os
 import re
+import sys
 from datetime import datetime, timedelta
 from jinja2 import Environment, PackageLoader
 from slugify import unique_slugify
@@ -124,6 +125,7 @@ def generate(dsn):
     getBlockingTickets(dsn)
     records = selectWithSQLRequest(dsn, query, TRACE=TRACE)
     verbose("Records number: %d" % len(records))
+    print >> sys.stderr, "# Records number: %d" % len(records)
 #("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"',
 #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
     for rec in records:
