@@ -17,6 +17,16 @@ leaves holiday "Doudou" 2014-06-12 +2d
     , holiday "Noel" 2014-12-29 +3d
 #2015
     , holiday "Jour de l'an" 2015-01-01
+    , holiday "Pâques" 2015-04-06
+    , holiday "Fête du travail" 2015-05-01
+    , holiday "Ascension" 2015-05-14
+    , holiday "Pentecôte" 2015-05-25
+    , holiday "Assomption" 2015-07-20
+    , holiday "Fête nationale" 2015-07-21
+    , holiday "Toussaint" 2015-11-02
+    , holiday "Armistice" 2015-11-11
+    , holiday "Noel" 2015-12-25
+    , holiday "Reports" 2015-12-28 +4d
 #    , holiday "" 2015--
 
 include "resources.tji"
