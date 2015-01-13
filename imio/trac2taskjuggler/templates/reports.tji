@@ -64,7 +64,7 @@ taskreport {{prj}}_mst "" {
 }
 
 resourcereport {{prj}}_res "" {
-  columns name, effort, weekly {width 1000 ${TaskTip} }
+  columns name, effort, weekly {width 2000 ${TaskTip} }
   loadunit days
   hideresource ~{{prj}}
   hidetask ~{{prj}} | isleaf()
