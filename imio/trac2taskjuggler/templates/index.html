@@ -1,8 +1,36 @@
 <html>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>
+        $(function()
+        {
+            $('#maj').click(function(){
+                $('#maj').unbind('click');
+                $('#maj').prop('value', 'En cours');
+                $.ajax({
+                    url: "http://127.0.1.1/cgi-bin/taskjuggler.cgi",
+                    success: function(response){
+                        location.reload();
+                        //$('#maj').prop('value', 'Mise à jour');
+                    },
+                    error: function (xhr, status, error) {
+                        $('#maj').prop('value', 'Mise à jour');
+                        alert(xhr.status)
+                        alert(status)
+                        alert(error)
+                        alert('Erreur lors de la mise à jour. Voir les logs.')
+                        $('#maj').bind('click');
+                        //location.reload()
+                    }
+                });
+            });
+        });
+
+    </script>
 </head>
 <body>
+<input type = button value='Mise à jour' id='maj'>
 <a style="float:right;" href="#help">Aide</a>
 <p>Nombres de tickets considérés: {{records_nb}}</p>
 {% if gen_err[1] %}
