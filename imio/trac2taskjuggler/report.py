@@ -21,7 +21,7 @@ records_pat = re.compile('^# Records number: (\d+)$')
 #------------------------------------------------------------------------------
 
 
-def generate(output_dir):
+def generate(output_dir, domain):
     """ Generate taskjuggler report """
     verbose("Begin of taskjuggler report")
     records_nb = 0
@@ -55,7 +55,7 @@ def generate(output_dir):
             gen_err[1] = len(lines)-1
     olds = read_dir(output_dir, only_folders=True)
     template = env.get_template('index.html')
-    rendered = template.render(report_err=report_err, gen_err=gen_err, olds=olds, records_nb=records_nb)
+    rendered = template.render(report_err=report_err, gen_err=gen_err, olds=olds, records_nb=records_nb, domain=domain)
     write_to(outfiles, 'index', rendered.encode('utf8'))
     close_outfiles(outfiles)
     # delete wrong generated folder

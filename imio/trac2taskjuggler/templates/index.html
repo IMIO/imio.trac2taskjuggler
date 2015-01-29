@@ -9,7 +9,7 @@
                 $('#maj').unbind('click');
                 $('#maj').prop('value', 'EN COURS !');
                 $.ajax({
-                    url: "http://127.0.1.1/cgi-bin/taskjuggler.cgi",
+                    url: "http://{{domain}}/cgi-bin/taskjuggler.cgi",
                     success: function(response){
                         location.reload();
                         //$('#maj').prop('value', 'Mise à jour');
