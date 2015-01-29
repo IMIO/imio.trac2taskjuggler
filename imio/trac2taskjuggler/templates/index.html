@@ -7,7 +7,7 @@
         {
             $('#maj').click(function(){
                 $('#maj').unbind('click');
-                $('#maj').prop('value', 'En cours');
+                $('#maj').prop('value', 'EN COURS !');
                 $.ajax({
                     url: "http://127.0.1.1/cgi-bin/taskjuggler.cgi",
                     success: function(response){
@@ -16,12 +16,14 @@
                     },
                     error: function (xhr, status, error) {
                         $('#maj').prop('value', 'Mise à jour');
-                        alert(xhr.status)
-                        alert(status)
-                        alert(error)
-                        alert('Erreur lors de la mise à jour. Voir les logs.')
-                        $('#maj').bind('click');
-                        //location.reload()
+//                        if (xhr.status != 0) {
+                            alert(xhr.status)
+                            alert(status)
+                            alert(error)
+                            alert('Erreur lors de la mise à jour. Voir les logs.')
+                            $('#maj').bind('click');
+//                        }
+                        location.reload();
                     }
                 });
             });
