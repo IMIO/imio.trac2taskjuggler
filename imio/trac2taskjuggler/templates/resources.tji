@@ -8,7 +8,7 @@ resource dev "DLL" {
   flags dll
 # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
   resource anuyens "anuyens" {
-    limits { dailymax 4.7h }
+    limits { dailymax 4.2h }
   {% if 'anuyens' in leaves %}
     leaves {{leaves['anuyens']}}
   {% endif %}
@@ -53,7 +53,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource gbastien "gbastien" {
-    limits { dailymax 5.8h }
+    limits { dailymax 5.0h }
   {% if 'gbastien' in leaves %}
     leaves {{leaves['gbastien']}}
   {% endif %}
