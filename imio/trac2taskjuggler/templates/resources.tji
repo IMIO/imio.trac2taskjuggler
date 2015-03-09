@@ -141,4 +141,14 @@ resource ext "Externes" {
     flags {{resources['ndufrane']|sort|join(', ')}}
   {% endif %}
   }
+  resource vfretin "vfretin" {
+  {% if 'vfretin' in resources %}
+    flags {{resources['vfretin']|sort|join(', ')}}
+  {% endif %}
+  }
+  resource cmessiant "cmessiant" {
+  {% if 'cmessiant' in resources %}
+    flags {{resources['cmessiant']|sort|join(', ')}}
+  {% endif %}
+  }
 }
