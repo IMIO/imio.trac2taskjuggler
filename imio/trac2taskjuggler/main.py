@@ -130,7 +130,6 @@ def generate(dsn):
 #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
     for rec in records:
         (mst, mst_due, id, summary, status, owner, prj, estimated, hours, description) = rec
-        mst = mst.decode('utf8')
         estimated = float(estimated)
         hours = float(hours)
         try:
@@ -147,6 +146,7 @@ def generate(dsn):
             msts_due[mst_prj][mst_wrk] = {}
         if mst_due not in msts_due[mst_prj][mst_wrk]:
             msts_due[mst_prj][mst_wrk][mst_due] = []
+        mst = mst.decode('utf8')
         if mst not in msts:
             mstid = unique_slugify(mst, separator='_', unique_id=True).encode('utf8')
             msts[mst] = {'prj': mst_prj, 'due': (mst_due <= min_mst_due and min_mst_due or mst_due),
