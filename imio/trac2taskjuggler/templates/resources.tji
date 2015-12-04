@@ -96,7 +96,6 @@ resource dev "DLL" {
   {% if 'sgeulette' in resources %}
     flags {{resources['sgeulette']|sort|join(', ')}}
   {% endif %}
-    workinghours fri off
   }
   resource vantoine "vantoine" {
     limits { dailymax 5.03h }
