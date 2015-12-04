@@ -1,4 +1,4 @@
-project imio "Planification depuis trac" {{ prj_start }} +1.8y {
+project imio "Planification depuis trac" {{ prj_start }} +2y {
     timingresolution 30 min
     timezone "Europe/Paris"
     currency "EUR"
@@ -27,7 +27,21 @@ leaves holiday "Doudou" 2014-06-12 +2d
     , holiday "Armistice" 2015-11-11
     , holiday "Noel" 2015-12-25
     , holiday "Reports" 2015-12-28 +4d
-#    , holiday "" 2015--
+#2016
+    , holiday "Jour de l'an" 2016-01-01
+    , holiday "Pâques" 2016-03-28
+    , holiday "Fête du travail" 2016-05-01
+    , holiday "Ascension" 2016-05-05
+    , holiday "Pentecôte" 2016-05-16
+    , holiday "Fête nationale" 2016-07-21
+    , holiday "Assomption" 2016-08-15
+    , holiday "Communauté fr" 2016-09-27
+    , holiday "Toussaint" 2016-11-01 +2d
+    , holiday "Armistice" 2016-11-11
+    , holiday "Dynastie" 2016-11-15
+    , holiday "Noel" 2016-12-25
+    , holiday "Reports" 2016-12-27 +2d
+#    , holiday "" 2017--
 
 include "resources.tji"
 include "tasks.tji"
