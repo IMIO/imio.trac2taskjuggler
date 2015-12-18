@@ -16,7 +16,7 @@ buildout:
 generate_tj:
 	if ! test -f bin/generate_tj;then make buildout;fi
 	if ! test -d project;then mkdir -p project;fi
-	bin/generate_tj 2> output/generation_errors.txt;
+	bin/generate_tj 2> output/generation_errors.html;
 
 .PHONY: report
 report:

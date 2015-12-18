@@ -42,7 +42,7 @@ def generate(output_dir, domain):
         error("error running command %s : %s" % (rep_cmd, errors_str))
         write_to(outfiles, 'error', errors_str)
         report_err[1] = len(errors)
-    gen_err = ['generation_errors.txt', 0]
+    gen_err = ['generation_errors.html', 0]
     if os.path.exists(os.path.join(output_dir, gen_err[0])):
         lines = read_file(os.path.join(output_dir, gen_err[0]), skip_empty=True)
         # Records number:

@@ -55,6 +55,10 @@ outfiles = {'tjp': {'file': '%s/trac.tjp' % PRJ_PATH},
             }
 EFFORT_EXCEED_FACTOR = 0.5
 
+
+def herror(msg):
+    error('%s<br />' % msg)
+
 #------------------------------------------------------------------------------
 
 
@@ -65,6 +69,15 @@ def cmp_mst(x, y):
         return 0
     else:
         return -1
+
+
+#------------------------------------------------------------------------------
+
+
+def a_link(*args):
+    """ Return an html link of joined parameters """
+    url = '/'.join([str(arg) for arg in args])
+    return '<a href="%s">%s</a>' % (url, url)
 
 #------------------------------------------------------------------------------
 
@@ -86,19 +99,22 @@ def getLeaves(dsn):
                 if len(parts) == 4 and parts[3] in ('d', 'h', 'min'):
                     parts[2] += parts[3]
                 if parts[0] not in ('annual', 'sick', 'special'):
-                    error("Leaves problem in '%s' (%s, %s/%s): bad leave type" % (description, owner, TICKET_URL, id))
+                    herror("Leaves problem in '%s' (%s, %s): bad leave type" %
+                          (description, owner, a_link(TICKET_URL, id)))
                     continue
                 if not re.match(date_pat, parts[1]):
-                    error("Leaves problem in '%s' (%s, %s/%s): bad date format" % (description, owner, TICKET_URL, id))
+                    herror("Leaves problem in '%s' (%s, %s): bad date format" %
+                          (description, owner, a_link(TICKET_URL, id)))
                     continue
                 if not re.match(duration_pat, parts[2]):
-                    error("Leaves problem in '%s' (%s, %s/%s): bad date format" % (description, owner, TICKET_URL, id))
+                    herror("Leaves problem in '%s' (%s, %s): bad date format" %
+                          (description, owner, a_link(TICKET_URL, id)))
                     continue
                 res.append(' '.join(parts[:3]))
             if res:
                 leaves[owner] = ', '.join(res)
         except Exception, exc:
-            error("Leaves analysis exception in '%s' (%s, %s/%s): %s" % (description, owner, TICKET_URL, id, exc))
+            herror("Leaves analysis exception in '%s' (%s, %s): %s" % (description, owner, a_link(TICKET_URL, id), exc))
 
 #------------------------------------------------------------------------------
 
@@ -125,7 +141,7 @@ def generate(dsn):
     getBlockingTickets(dsn)
     records = selectWithSQLRequest(dsn, query, TRACE=TRACE)
     verbose("Records number: %d" % len(records))
-    print >> sys.stderr, "# Records number: %d" % len(records)
+    print >> sys.stderr, "# Records number: %d<br />" % len(records)
 #("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"',
 #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
     for rec in records:
@@ -136,9 +152,10 @@ def generate(dsn):
             mst_list = mst.split(' - ')
             (mst_prj, mst_wrk) = (mst_list[0], mst_list[1])
             if mst_prj not in PROJECTS:
-                error("Project '%s' not well extracted from '%s' (%s, %s/%s)" % (mst_prj, mst, owner, TICKET_URL, id))
+                herror("Project '%s' not well extracted from '%s' (%s, %s)" %
+                      (mst_prj, mst, owner, a_link(TICKET_URL, id)))
         except:
-            error("Project cannot be extracted from '%s' (%s, %s/%s)" % (mst, owner, TICKET_URL, id))
+            herror("Project cannot be extracted from '%s' (%s, %s)" % (mst, owner, a_link(TICKET_URL, id)))
         #due = datetime.strptime(mst_due, '%Y/%m/%d').date()
         if mst_prj not in msts_due:
             msts_due[mst_prj] = {}
@@ -154,10 +171,10 @@ def generate(dsn):
             msts_due[mst_prj][mst_wrk][mst_due].append(mst)
         msts[mst]['t'].append(id)
         if id in tkts:
-            error("Ticket '%s' already found in dict %s (%s, %s/%s)" % (id, tkts[id], owner, TICKET_URL, id))
+            herror("Ticket '%s' already found in dict %s (%s, %s)" % (id, tkts[id], owner, a_link(TICKET_URL, id)))
             continue
         if not owner:
-            error("Ticket '%s' has no owner (%s/%s)" % (id, TICKET_URL, id))
+            herror("Ticket '%s' has no owner (%s)" % (id, a_link(TICKET_URL, id)))
         tkts[id] = {'sum': summary, 'status': status, 'owner': owner, 'prj': prj,
                     'estim': estimated, 'hours': hours, 'mst': mst}
         if owner not in msts[mst]['own']:
@@ -165,8 +182,8 @@ def generate(dsn):
         msts[mst]['own'][owner]['t'].append(id)
         msts[mst]['own'][owner]['done'] += hours
         if estimated == 0:
-            error("Estimated hour not set for ticket (%s, %s/%s)" %
-                  (owner, TICKET_URL, id))
+            herror("Estimated hour not set for ticket (%s, %s)" %
+                  (owner, a_link(TICKET_URL, id)))
             continue
         elif hours == 0:
             msts[mst]['own'][owner]['effort'] += estimated
@@ -195,7 +212,7 @@ def generate(dsn):
                 continue  # no blocking
             for blck in tkts_links[tkt]:
                 if not blck in tkts:
-                    error("Blocking ticket '%s/%s' not found in due milestone tickets" % (TICKET_URL, blck))
+                    herror("Blocking ticket '%s' not found in due milestone tickets" % (a_link(TICKET_URL), blck))
                     continue
                 blck_mst = msts[tkts[blck]['mst']]['id']
                 # skipping self milestone dependency
