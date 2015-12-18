@@ -150,4 +150,9 @@ resource ext "Externes" {
     flags {{resources['cmessiant']|sort|join(', ')}}
   {% endif %}
   }
+  resource gdy999 "gdy999" {
+  {% if 'gdy999' in resources %}
+    flags {{resources['gdy999']|sort|join(', ')}}
+  {% endif %}
+  }
 }
