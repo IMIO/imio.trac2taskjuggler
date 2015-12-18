@@ -77,7 +77,7 @@ def cmp_mst(x, y):
 def a_link(*args):
     """ Return an html link of joined parameters """
     url = '/'.join([str(arg) for arg in args])
-    return '<a href="%s">%s</a>' % (url, url)
+    return '<a href="%s" target="_blank">%s</a>' % (url, url)
 
 #------------------------------------------------------------------------------
 
