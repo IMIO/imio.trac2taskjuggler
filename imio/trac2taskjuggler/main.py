@@ -212,7 +212,7 @@ def generate(dsn):
                 continue  # no blocking
             for blck in tkts_links[tkt]:
                 if not blck in tkts:
-                    herror("Blocking ticket '%s' not found in due milestone tickets" % (a_link(TICKET_URL), blck))
+                    herror("Blocking ticket '%s' not found in due milestone tickets" % (a_link(TICKET_URL, blck)))
                     continue
                 blck_mst = msts[tkts[blck]['mst']]['id']
                 # skipping self milestone dependency
