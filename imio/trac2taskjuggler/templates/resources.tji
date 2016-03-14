@@ -8,7 +8,7 @@ resource dev "DLL" {
   flags dll
 # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
   resource anuyens "anuyens" {
-    limits { dailymax 4.2h }
+    limits { dailymax 4.58h }
   {% if 'anuyens' in leaves %}
     leaves {{leaves['anuyens']}}
   {% endif %}
@@ -44,7 +44,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource fngaha "fngaha" {
-    limits { dailymax 4.46h }
+    limits { dailymax 3.84h }
   {% if 'fngaha' in leaves %}
     leaves {{leaves['fngaha']}}
   {% endif %}
@@ -53,7 +53,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource gbastien "gbastien" {
-    limits { dailymax 5.0h }
+    limits { dailymax 5.5h }
   {% if 'gbastien' in leaves %}
     leaves {{leaves['gbastien']}}
   {% endif %}
@@ -70,6 +70,15 @@ resource dev "DLL" {
     flags {{resources['mgennart']|sort|join(', ')}}
   {% endif %}
   }
+  resource nblondiau "nblondiau" {
+    limits { dailymax 5h }
+  {% if 'nblondiau' in leaves %}
+    leaves {{leaves['nblondiau']}}
+  {% endif %}
+  {% if 'nblondiau' in resources %}
+    flags {{resources['nblondiau']|sort|join(', ')}}
+  {% endif %}
+  }
   resource osnickers "osnickers" {
     limits { dailymax 4.37h }
   {% if 'osnickers' in leaves %}
@@ -80,7 +89,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource sdelcourt "sdelcourt" {
-    limits { dailymax 6h }
+    limits { dailymax 5.5h }
   {% if 'sdelcourt' in leaves %}
     leaves {{leaves['sdelcourt']}}
   {% endif %}
@@ -89,7 +98,7 @@ resource dev "DLL" {
   {% endif %}
   }
   resource sgeulette "sgeulette" {
-    limits { dailymax 4.14h }
+    limits { dailymax 5.33h }
   {% if 'sgeulette' in leaves %}
     leaves {{leaves['sgeulette']}}
   {% endif %}
