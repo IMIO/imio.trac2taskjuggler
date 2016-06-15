@@ -16,7 +16,7 @@ base_rep_cmd = 'tj3 --silent -o DAY_DIR %s/trac.tjp' % PRJ_PATH
 outfiles = {'index': {'filename': 'index.html'},
             'error': {'filename': 'report_errors.txt'},
             }
-records_pat = re.compile('^# Records number: (\d+)$')
+records_pat = re.compile('^# Records number: (\d+)<br />$')
 
 #------------------------------------------------------------------------------
 
