@@ -119,14 +119,29 @@ resource dev "DLL" {
 
 resource ext "Externes" {
   flags ext
-  resource jfroche "jfroche" {
-  {% if 'jfroche' in resources %}
-    flags {{resources['jfroche']|sort|join(', ')}}
+  resource cmessiant "cmessiant" {
+  {% if 'cmessiant' in resources %}
+    flags {{resources['cmessiant']|sort|join(', ')}}
+  {% endif %}
+  }
+  resource fpeters "fpeters" {
+  {% if 'fpeters' in resources %}
+    flags {{resources['fpeters']|sort|join(', ')}}
   {% endif %}
   }
   resource gotcha "gotcha" {
   {% if 'gotcha' in resources %}
     flags {{resources['gotcha']|sort|join(', ')}}
+  {% endif %}
+  }
+  resource gdy999 "gdy999" {
+  {% if 'gdy999' in resources %}
+    flags {{resources['gdy999']|sort|join(', ')}}
+  {% endif %}
+  }
+  resource jfroche "jfroche" {
+  {% if 'jfroche' in resources %}
+    flags {{resources['jfroche']|sort|join(', ')}}
   {% endif %}
   }
   resource llasudry "llasudry" {
@@ -152,16 +167,6 @@ resource ext "Externes" {
   resource vfretin "vfretin" {
   {% if 'vfretin' in resources %}
     flags {{resources['vfretin']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource cmessiant "cmessiant" {
-  {% if 'cmessiant' in resources %}
-    flags {{resources['cmessiant']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource gdy999 "gdy999" {
-  {% if 'gdy999' in resources %}
-    flags {{resources['gdy999']|sort|join(', ')}}
   {% endif %}
   }
 }
