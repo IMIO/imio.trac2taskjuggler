@@ -144,6 +144,11 @@ resource ext "Externes" {
     flags {{resources['jfroche']|sort|join(', ')}}
   {% endif %}
   }
+  resource icollins "icollins" {
+  {% if 'icollins' in resources %}
+    flags {{resources['icollins']|sort|join(', ')}}
+  {% endif %}
+  }
   resource llasudry "llasudry" {
   {% if 'llasudry' in resources %}
     flags {{resources['llasudry']|sort|join(', ')}}
