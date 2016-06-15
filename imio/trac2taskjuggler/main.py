@@ -8,7 +8,7 @@ from jinja2 import Environment, PackageLoader
 from slugify import unique_slugify
 from imio.pyutils.postgres import selectWithSQLRequest, selectAllInTable
 from imio.pyutils.system import verbose, error, write_to, close_outfiles
-from config import PROJECTS, TICKET_URL
+from config import PROJECTS, TICKET_URL, PROJECTS_TO_KEEP
 
 
 TRACE = False
@@ -157,6 +157,10 @@ def generate(dsn):
         except:
             herror("Project cannot be extracted from '%s' (%s, %s)" % (mst, owner, a_link(TICKET_URL, id)))
         #due = datetime.strptime(mst_due, '%Y/%m/%d').date()
+        # We skip unfollowed projects !!
+        if mst_prj not in PROJECTS_TO_KEEP:
+            continue
+
         if mst_prj not in msts_due:
             msts_due[mst_prj] = {}
         if mst_wrk not in msts_due[mst_prj]:
