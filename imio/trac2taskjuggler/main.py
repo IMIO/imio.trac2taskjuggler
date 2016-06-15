@@ -140,10 +140,11 @@ def generate(dsn):
     min_mst_due = datetime.strftime(min_mst_due, "%Y-%m-%d")
     getBlockingTickets(dsn)
     records = selectWithSQLRequest(dsn, query, TRACE=TRACE)
-    verbose("Records number: %d" % len(records))
+    #verbose("Records number: %d" % len(records))
     print >> sys.stderr, "# Records number: %d<br />" % len(records)
 #("URBAN - DEV - Permis d'environnement classe 1", '2012-12-31', 5340, 'Ajouter le champ "Secteur d\'activit\xc3\xa9"',
 #'NOUVEAU', 'sdelcourt', 'Urbanisme communes (URBAN)', Decimal('0.0'), Decimal('0'), "data grid avec au moins ")
+    tickets_nb = 0
     for rec in records:
         (mst, mst_due, id, summary, status, owner, prj, estimated, hours, description) = rec
         estimated = float(estimated)
@@ -161,6 +162,7 @@ def generate(dsn):
         if mst_prj not in PROJECTS_TO_KEEP:
             continue
 
+        tickets_nb += 1
         if mst_prj not in msts_due:
             msts_due[mst_prj] = {}
         if mst_wrk not in msts_due[mst_prj]:
@@ -222,6 +224,9 @@ def generate(dsn):
                 # skipping self milestone dependency
                 if tkts[blck]['mst'] != mst and blck_mst not in msts[mst]['dep']:
                     msts[mst]['dep'].append(blck_mst)
+
+    verbose("Records number: %d, Tickets number: %d" % (len(records), tickets_nb))
+    print >> sys.stderr, "# Tickets number: %d<br />" % tickets_nb
 
     # generate trac.tjp file
     template = env.get_template('trac.tjp')

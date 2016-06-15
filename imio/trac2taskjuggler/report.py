@@ -17,6 +17,7 @@ outfiles = {'index': {'filename': 'index.html'},
             'error': {'filename': 'report_errors.txt'},
             }
 records_pat = re.compile('^# Records number: (\d+)<br />$')
+tickets_pat = re.compile('^# Tickets number: (\d+)<br />$')
 
 #------------------------------------------------------------------------------
 
@@ -47,7 +48,8 @@ def generate(output_dir, domain):
         lines = read_file(os.path.join(output_dir, gen_err[0]), skip_empty=True)
         # Records number:
         for line in lines:
-            mo = records_pat.match(line)
+            # mo = records_pat.match(line)
+            mo = tickets_pat.match(line)
             if mo:
                 records_nb = mo.group(1)
                 break
