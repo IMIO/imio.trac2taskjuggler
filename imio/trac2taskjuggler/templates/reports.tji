@@ -5,7 +5,7 @@ textreport frame "" {
     <[navigator id="navbar"]>
     [../index.html Index général]
   ->8-
-  textreport index "Overview" {
+  textreport index "Global" {
     formats html
     center '<[report id="overview"]>'
   }
@@ -17,7 +17,7 @@ textreport frame "" {
       ----
       <[report id="{{prj}}_res"]>
     ->8-
-  }  
+  }
 {% endfor %}
 
   textreport "ResourceGraph" {
@@ -27,7 +27,7 @@ textreport frame "" {
   }
   textreport "ResourceGraphMst" {
     formats html
-    title "Ressources Milestones"
+    title "Ressources jalons"
     center '<[report id="resourceGraphMst"]>'
   }
 }
@@ -46,7 +46,7 @@ resourcereport resourceGraph "Ressources" {
   loadunit days
 }
 
-resourcereport resourceGraphMst "Ressources Milestones" {
+resourcereport resourceGraphMst "Ressources jalons" {
   columns name, effort, weekly {width 2000 ${TaskTip} }
   loadunit days
   # We only want first level
