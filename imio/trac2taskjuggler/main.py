@@ -44,7 +44,28 @@ msts_due = {}
 tkts = {}
 tkts_links = {}
 leaves = {}
-resources = {}
+resources = {
+    'anuyens': {'lim': '4.58h', 'res': 'dll', 'prj': []},
+    'bsuttor': {'lim': '5.5h', 'res': 'dll', 'prj': []},
+    'cboulanger': {'lim': '5h', 'res': 'dll', 'prj': []},
+    'cdewilde': {'lim': '3.99h', 'res': 'dll', 'prj': []},
+    'fngaha': {'lim': '3.84h', 'res': 'dll', 'prj': []},
+    'gbastien': {'lim': '5.5h', 'res': 'dll', 'prj': []},
+    'mgennart': {'lim': '2.29h', 'res': 'dll', 'prj': []},
+    'nblondiau': {'lim': '5h', 'res': 'dll', 'prj': []},
+    'osnickers': {'lim': '4.37h', 'res': 'dll', 'prj': []},
+    'sdelcourt': {'lim': '5.5h', 'res': 'dll', 'prj': []},
+    'sgeulette': {'lim': '5.33h', 'res': 'dll', 'prj': []},
+    'cmessiant': {'res': 'ext', 'prj': []},
+    'fpeters': {'res': 'ext', 'prj': []},
+    'gotcha': {'res': 'ext', 'prj': []},
+    'gdy999': {'res': 'ext', 'prj': []},
+    'jfroche': {'res': 'ext', 'prj': []},
+    'llasudry': {'res': 'ext', 'prj': []},
+    'mpeeters': {'res': 'ext', 'prj': []},
+    'ndufrane': {'res': 'ext', 'prj': []},
+    'vfretin': {'res': 'ext', 'prj': []},
+}
 date_pat = re.compile('^\d{4}-\d{2}-\d{2}$')
 duration_pat = re.compile('^\+\d+(d|h|min)$')
 PRJ_PATH = '%s/project' % os.environ.get('BUILDOUT', os.environ.get('PWD', '/Cannot_get_buildout_path'))
@@ -187,6 +208,12 @@ def generate(dsn):
             msts[mst]['own'][owner] = {'effort': 0.0, 't': [], 'done': 0.0}
         msts[mst]['own'][owner]['t'].append(id)
         msts[mst]['own'][owner]['done'] += hours
+
+        if owner not in resources:
+            resources[owner] = {'res': 'cust', 'prj': []}
+        if mst_prj not in resources[owner]['prj']:
+            resources[owner]['prj'].append(mst_prj)
+
         if estimated == 0:
             herror("Estimated hour not set for ticket (%s, %s)" %
                   (owner, a_link(TICKET_URL, id)))
@@ -197,10 +224,6 @@ def generate(dsn):
             msts[mst]['own'][owner]['effort'] += (estimated * EFFORT_EXCEED_FACTOR)
         else:
             msts[mst]['own'][owner]['effort'] += (estimated - hours)
-        if owner not in resources:
-            resources[owner] = {}
-        if mst_prj not in resources[owner]:
-            resources[owner][mst_prj] = 0
 
     # calculate mst order: set the priority
     for prj in msts_due:
@@ -224,6 +247,13 @@ def generate(dsn):
                 # skipping self milestone dependency
                 if tkts[blck]['mst'] != mst and blck_mst not in msts[mst]['dep']:
                     msts[mst]['dep'].append(blck_mst)
+    # group resources
+    resources_gp = {'dll': [], 'ext': [], 'cust': []}
+    for usr in sorted(resources.keys()):
+        res = resources[usr].pop('res')
+        if res != 'dll' and not resources[usr]['prj']:
+            continue
+        resources_gp[res].append((usr, resources[usr]))
 
     verbose("Records number: %d, Tickets number: %d" % (len(records), tickets_nb))
     print >> sys.stderr, "# Tickets number: %d<br />" % tickets_nb
@@ -235,7 +265,7 @@ def generate(dsn):
     # generate resources.tji
     getLeaves(dsn)
     template = env.get_template('resources.tji')
-    rendered = template.render(leaves=leaves, resources=resources, prjs=msts_due)
+    rendered = template.render(leaves=leaves, resources=resources_gp, prjs=msts_due)
     write_to(outfiles, 'resources', rendered.encode('utf8'))
     # generate reports.tji
     template = env.get_template('reports.tji')

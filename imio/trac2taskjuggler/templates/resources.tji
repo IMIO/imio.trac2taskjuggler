@@ -1,5 +1,6 @@
 flags dll
 flags ext
+flags cust
 {% for prj in prjs.keys()|sort %}
 flags {{prj}}
 {% endfor %}
@@ -7,171 +8,33 @@ flags {{prj}}
 resource dev "DLL" {
   flags dll
 # limits { dailymax 5h } : max de la durée de travail journalière, une fois retiré le support et l'interne
-  resource anuyens "anuyens" {
-    limits { dailymax 4.58h }
-  {% if 'anuyens' in leaves %}
-    leaves {{leaves['anuyens']}}
+  {% for (usr, dic) in resources['dll'] %}
+  resource {{usr}} "{{usr}}" {
+    limits { dailymax {{dic['lim']}} }
+  {% if usr in leaves %}
+    leaves {{leaves[usr]}}
   {% endif %}
-  {% if 'anuyens' in resources %}
-    flags {{resources['anuyens']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource bsuttor "bsuttor" {
-    limits { dailymax 5.5h }
-  {% if 'bsuttor' in leaves %}
-    leaves {{leaves['bsuttor']}}
-  {% endif %}
-  {% if 'bsuttor' in resources %}
-    flags {{resources['bsuttor']|sort|join(', ')}}
+  {% if dic['prj'] %}
+    flags {{dic['prj']|sort|join(', ')}}
   {% endif %}
   }
-  resource cboulanger "cboulanger" {
-    limits { dailymax 5h }
-  {% if 'cboulanger' in leaves %}
-    leaves {{leaves['cboulanger']}}
-  {% endif %}
-  {% if 'cboulanger' in resources %}
-    flags {{resources['cboulanger']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource cdewilde "cdewilde" {
-    limits { dailymax 3.99h }
-  {% if 'cdewilde' in leaves %}
-    leaves {{leaves['cdewilde']}}
-  {% endif %}
-  {% if 'cdewilde' in resources %}
-    flags {{resources['cdewilde']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource fngaha "fngaha" {
-    limits { dailymax 3.84h }
-  {% if 'fngaha' in leaves %}
-    leaves {{leaves['fngaha']}}
-  {% endif %}
-  {% if 'fngaha' in resources %}
-    flags {{resources['fngaha']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource gbastien "gbastien" {
-    limits { dailymax 5.5h }
-  {% if 'gbastien' in leaves %}
-    leaves {{leaves['gbastien']}}
-  {% endif %}
-  {% if 'gbastien' in resources %}
-    flags {{resources['gbastien']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource mgennart "mgennart" {
-    limits { dailymax 2.29h }
-  {% if 'mgennart' in leaves %}
-    leaves {{leaves['mgennart']}}
-  {% endif %}
-  {% if 'mgennart' in resources %}
-    flags {{resources['mgennart']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource nblondiau "nblondiau" {
-    limits { dailymax 5h }
-  {% if 'nblondiau' in leaves %}
-    leaves {{leaves['nblondiau']}}
-  {% endif %}
-  {% if 'nblondiau' in resources %}
-    flags {{resources['nblondiau']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource osnickers "osnickers" {
-    limits { dailymax 4.37h }
-  {% if 'osnickers' in leaves %}
-    leaves {{leaves['osnickers']}}
-  {% endif %}
-  {% if 'osnickers' in resources %}
-    flags {{resources['osnickers']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource sdelcourt "sdelcourt" {
-    limits { dailymax 5.5h }
-  {% if 'sdelcourt' in leaves %}
-    leaves {{leaves['sdelcourt']}}
-  {% endif %}
-  {% if 'sdelcourt' in resources %}
-    flags {{resources['sdelcourt']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource sgeulette "sgeulette" {
-    limits { dailymax 5.33h }
-  {% if 'sgeulette' in leaves %}
-    leaves {{leaves['sgeulette']}}
-  {% endif %}
-  {% if 'sgeulette' in resources %}
-    flags {{resources['sgeulette']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource vantoine "vantoine" {
-    limits { dailymax 5.03h }
-  {% if 'vantoine' in leaves %}
-    leaves {{leaves['vantoine']}}
-  {% endif %}
-  {% if 'vantoine' in resources %}
-    flags {{resources['vantoine']|sort|join(', ')}}
-  {% endif %}
-  }
+  {% endfor %}
 }
 
 resource ext "Externes" {
   flags ext
-  resource cmessiant "cmessiant" {
-  {% if 'cmessiant' in resources %}
-    flags {{resources['cmessiant']|sort|join(', ')}}
-  {% endif %}
+  {% for (usr, dic) in resources['ext'] %}
+  resource {{usr}} "{{usr}}" {
+    flags {{dic['prj']|sort|join(', ')}}
   }
-  resource fpeters "fpeters" {
-  {% if 'fpeters' in resources %}
-    flags {{resources['fpeters']|sort|join(', ')}}
-  {% endif %}
+  {% endfor %}
+}
+
+resource cust "Clients" {
+  flags cust
+  {% for (usr, dic) in resources['cust'] %}
+  resource {{usr}} "{{usr}}" {
+    flags {{dic['prj']|sort|join(', ')}}
   }
-  resource gotcha "gotcha" {
-  {% if 'gotcha' in resources %}
-    flags {{resources['gotcha']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource gdy999 "gdy999" {
-  {% if 'gdy999' in resources %}
-    flags {{resources['gdy999']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource jfroche "jfroche" {
-  {% if 'jfroche' in resources %}
-    flags {{resources['jfroche']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource icollins "icollins" {
-  {% if 'icollins' in resources %}
-    flags {{resources['icollins']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource llasudry "llasudry" {
-  {% if 'llasudry' in resources %}
-    flags {{resources['llasudry']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource mcervello "mcervello" {
-  {% if 'mcervello' in resources %}
-    flags {{resources['mcervello']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource mpeeters "mpeeters" {
-  {% if 'mpeeters' in resources %}
-    flags {{resources['mpeeters']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource ndufrane "ndufrane" {
-  {% if 'ndufrane' in resources %}
-    flags {{resources['ndufrane']|sort|join(', ')}}
-  {% endif %}
-  }
-  resource vfretin "vfretin" {
-  {% if 'vfretin' in resources %}
-    flags {{resources['vfretin']|sort|join(', ')}}
-  {% endif %}
-  }
+  {% endfor %}
 }
