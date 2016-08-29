@@ -5,8 +5,9 @@ textreport frame "" {
     <[navigator id="navbar"]>
     [../index.html Index général]
   ->8-
-  textreport index "Global" {
+  textreport index "Overview" {
     formats html
+    title "Global"
     center '<[report id="overview"]>'
   }
 {% for prj in prjs.keys()|sort %}
