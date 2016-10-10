@@ -233,6 +233,8 @@ def generate(dsn):
                 for mst in msts_due[prj][wrk][due]:
                     if p > 1:
                         msts[mst]['prty'] = p
+                    else:
+                        msts[mst]['prty'] = 1
                 p -= 50
     # find blocking milestone from blocking tickets
     for mst in msts:
