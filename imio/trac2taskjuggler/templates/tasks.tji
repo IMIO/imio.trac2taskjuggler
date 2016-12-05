@@ -9,7 +9,7 @@ flags {{prj}}
   {% for wrk in prjs[prj]|sort %}
     {% for due in prjs[prj][wrk]|sort %}
       {% for mst in prjs[prj][wrk][due]|sort %}
-task {{msts[mst]['id']}} "{{mst}}" {
+task {{msts[mst]['id']}} "{{mst|replace('"', '\\"')}}" {
   flags maintask, {{prj}}
   {% if msts[mst]['dep'] %}
   depends {{msts[mst]['dep']|join(', ')}}
